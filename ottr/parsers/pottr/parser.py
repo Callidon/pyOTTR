@@ -4,7 +4,7 @@ from ottr.parsers.pottr.lexer import lex_template_pottr
 from ottr.base.base_templates import OttrTriple
 from ottr.base.parameter import ConcreteParameter, VariableParameter
 from ottr.base.utils import OTTR_TRIPLE_URI
-from rdflib import Graph, URIRef, Variable, BNode
+from rdflib import Graph, URIRef, Variable, Literal
 from rdflib.namespace import RDFS
 from rdflib.namespace import NamespaceManager
 from rdflib.util import from_n3
@@ -105,15 +105,18 @@ if __name__ == "__main__":
     parsed = parse_template_pottr("""
         @prefix ex: <http://example.org#>.
         ex:Person[ ?firstName, ?lastName, ?email ] :: {
-            ottr:Triple (_:person, rdf:type, foaf:Person),
-            ottr:Triple (_:person, foaf:firstName, ?firstName)
+          ottr:Triple (_:person, rdf:type, foaf:Person ),
+          ottr:Triple (_:person, foaf:firstName, ?firstName ),
+          ottr:Triple (_:person, foaf:lastName, ?lastName ),
+          ottr:Triple (_:person, foaf:mbox, ?email )
         } .
     """)
 
     bindings = dict()
-    bindings[Variable('?firstName')] = URIRef('http://example.org#Alice')
+    bindings[Variable('?firstName')] = Literal('Ann')
+    bindings[Variable('?lastName')] = Literal('Strong')
+    bindings[Variable('?email')] = URIRef('mailto:ann.strong@gmail.com')
 
     for instance in parsed[0]['instances']:
-        print('------------------')
         for triple in instance.expand(bindings, as_nt=True):
             print(triple)

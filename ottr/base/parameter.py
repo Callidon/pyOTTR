@@ -41,4 +41,4 @@ class VariableParameter(InstanceParameter):
         if self._value in bindings:
             # TODO add constraints checking
             return bindings[self._value].n3() if as_nt else bindings[self._value]
-        return OTTR('none')
+        return OTTR.none
