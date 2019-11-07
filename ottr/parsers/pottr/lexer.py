@@ -1,7 +1,7 @@
 # lexer.py
 # Author: Thomas MINIER - MIT License 2019
 import re
-from pyparsing import Regex, Group, Word, Optional, OneOrMore, ZeroOrMore, Literal, MatchFirst, LineEnd
+from pyparsing import Keyword, LineEnd, Literal, MatchFirst, OneOrMore, Optional, Group, Regex, Word, ZeroOrMore
 
 # ----- General terms ------
 
@@ -45,8 +45,8 @@ rdfTerm = MatchFirst([iri, literal, bnode, variable])
 # A template parameter definition, with optional type and nonblank
 # For example: ?iri or xsd:string ?literal or ! otrr:IRI ?iri
 param = Group(
-            Optional(Literal('! ')).setResultsName('nonblank') +
-            Optional(Literal('? ')).setResultsName('optional') +
+            Optional(Keyword('!')).setResultsName('nonblank') +
+            Optional(Keyword('?')).setResultsName('optional') +
             Optional(iri).setResultsName('type') +
             variable.setResultsName('value')
         ).setResultsName('parameter') + Optional(',').suppress()
