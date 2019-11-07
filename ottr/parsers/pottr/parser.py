@@ -58,7 +58,7 @@ def parse_template_pottr(text):
         uri = prefix.value
         if uri.startswith('<') and uri.endswith('>'):
             uri = uri[1: -1]
-        nsm.bind(prefix.name, uri)
+        nsm.bind(prefix.name, uri, replace=True)
 
     # parse each template definition found
     ottr_templates = list()
