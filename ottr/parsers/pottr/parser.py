@@ -2,6 +2,7 @@
 # Author: Thomas MINIER - MIT License 2019
 from ottr.parsers.pottr.lexer import lex_template_pottr
 from ottr.base.base_templates import OttrTriple
+from ottr.base.template import MainTemplate
 from ottr.base.parameter import ConcreteParameter, VariableParameter
 from ottr.base.utils import OTTR_TRIPLE_URI
 from rdflib import Graph, URIRef, Variable, Literal
@@ -16,11 +17,10 @@ def parse_term(term, nsm=None):
         return Variable(term[1:])
     return from_n3(term, nsm=nsm)
 
-def parse_template_parameter(param, position, nsm=None):
+def parse_template_parameter(param, nsm=None):
     """Parse an OTTR template parameter"""
     template_param = dict()
     template_param['name'] = parse_term(param.value, nsm=nsm)
-    template_param['position'] = position
     template_param['type'] = param.type if len(param.type) > 0 else RDFS.Resource
     template_param['optional'] = True if len(param.optional) > 0 else False
     template_param['nonblank'] = True if len(param.nonblank) > 0 else False
@@ -34,8 +34,8 @@ def parse_template_instance(instance, nsm=None):
     if template_name == OTTR_TRIPLE_URI:
         # TODO check that the instance has only 3 parameters
         params = list()
-        for i in range(len(instance.parameters.asList())):
-            value = parse_term(instance.parameters[i], nsm=nsm)
+        for parameter in instance.parameters:
+            value = parse_term(parameter, nsm=nsm)
             if type(value) is Variable:
                 params.append(VariableParameter(value))
             else:
@@ -78,22 +78,25 @@ def parse_template_pottr(text):
     # parse each template definition found
     ottr_templates = list()
     for template in tree.templates:
-        ottr_template = dict()
-        # create template name
-        ottr_template['name'] = parse_term(template.name, nsm=nsm)
+        # ottr_template = dict()
+        template_name = parse_term(template.name, nsm=nsm)
 
         # parse parameters
         template_params = list()
         for pos in range(len(template.parameters.asList())):
-            template_params.append(parse_template_parameter(template.parameters[pos], pos, nsm=nsm))
-        ottr_template['parameters'] = template_params
+            parameter = parse_template_parameter(template.parameters[pos], nsm=nsm)
+            # TODO handle parameter better than that
+            template_params.append((parameter['name'], pos))
 
         # parse instances
         template_instances = list()
         for instance in template.instances:
             template_instances.append(parse_template_instance(instance, nsm=nsm))
-        ottr_template['instances'] = template_instances
 
+        # create the OTTR template & register its parameters
+        ottr_template = MainTemplate(template_name, template_instances)
+        for name, position in template_params:
+            ottr_template.add_parameter(name, position)
         # register the new OTTR template
         ottr_templates.append(ottr_template)
     return ottr_templates
@@ -112,11 +115,9 @@ if __name__ == "__main__":
         } .
     """)
 
-    bindings = dict()
-    bindings[Variable('?firstName')] = Literal('Ann')
-    bindings[Variable('?lastName')] = Literal('Strong')
-    bindings[Variable('?email')] = URIRef('mailto:ann.strong@gmail.com')
+    person_template = parsed[0]
 
-    for instance in parsed[0]['instances']:
-        for triple in instance.expand(bindings, as_nt=True):
-            print(triple)
+    instance_params = person_template.format_parameters([(0, Literal('Ann')), (1, Literal('Strong')), (2, URIRef('mailto:ann.strong@gmail.com'))])
+
+    for triple in person_template.expand(instance_params, as_nt=True):
+        print(triple)
