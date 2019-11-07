@@ -7,6 +7,8 @@ from rdflib.namespace import NamespaceManager
 from rdflib.util import from_n3
 
 def parse_term(term, nsm=None):
+    """Parse a RDF Term from text format to rdflib format"""
+    # rdflib tends to see SPARQL variables as blank nodes, so we need to handle them separately
     if term.startswith('?'):
         return Variable(term[1:])
     return from_n3(term, nsm=nsm)
@@ -65,7 +67,6 @@ def parse_template_pottr(text):
     for template in tree.templates:
         ottr_template = dict()
         # create template name
-        # TODO: only works for full IRI, not prefixed IRIs
         ottr_template['name'] = parse_term(template.name, nsm=nsm)
 
         # parse parameters
