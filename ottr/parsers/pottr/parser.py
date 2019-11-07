@@ -5,6 +5,8 @@ from rdflib import URIRef, Variable, BNode
 import rdflib.namespace as PREFIXES
 from rdflib.util import from_n3
 
+# TODO to support prefix, see https://rdflib.readthedocs.io/en/stable/apidocs/rdflib.html#rdflib.util.from_n3 for using prefixes with the from_n3() function
+
 def parse_template_parameter(param, position):
     """Parse an OTTR template parameter"""
     template_param = dict()
