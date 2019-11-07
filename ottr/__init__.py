@@ -4,7 +4,7 @@
     Manipulate OTTR Reasonable Ontology Templates in Python
 """
 
-from generator import Generator
+from ottr.generator import Generator
 
 __all__ = [
     'Generator'
