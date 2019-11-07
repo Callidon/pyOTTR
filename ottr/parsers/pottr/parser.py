@@ -10,8 +10,8 @@ def parse_template_parameter(param):
     template_param = dict()
     template_param['name'] = Variable(param.value)
     template_param['type'] = param.type if len(param.type) > 0 else PREFIXES.RDFS.Resource
-    template_param['optional'] = True if param.optional == '?' else False
-    template_param['nonblank'] = True if param.nonblank == '!' else False
+    template_param['optional'] = True if len(param.optional) > 0 else False
+    template_param['nonblank'] = True if len(param.nonblank) > 0 else False
     return template_param
 
 def parse_template_pottr(text):
