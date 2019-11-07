@@ -5,7 +5,7 @@ from ottr.base.base_templates import OttrTriple
 from ottr.base.template import MainTemplate
 from ottr.base.parameter import ConcreteParameter, VariableParameter
 from ottr.base.utils import OTTR_TRIPLE_URI
-from rdflib import Graph, URIRef, Variable, Literal
+from rdflib import Graph, Variable
 from rdflib.namespace import RDFS
 from rdflib.namespace import NamespaceManager
 from rdflib.util import from_n3
@@ -100,24 +100,3 @@ def parse_template_pottr(text):
         # register the new OTTR template
         ottr_templates.append(ottr_template)
     return ottr_templates
-
-
-# ---- Testing -----
-if __name__ == "__main__":
-
-    parsed = parse_template_pottr("""
-        @prefix ex: <http://example.org#>.
-        ex:Person[ ?firstName, ?lastName, ?email ] :: {
-          ottr:Triple (_:person, rdf:type, foaf:Person ),
-          ottr:Triple (_:person, foaf:firstName, ?firstName ),
-          ottr:Triple (_:person, foaf:lastName, ?lastName ),
-          ottr:Triple (_:person, foaf:mbox, ?email )
-        } .
-    """)
-
-    person_template = parsed[0]
-
-    instance_params = person_template.format_parameters([(0, Literal('Ann')), (1, Literal('Strong')), (2, URIRef('mailto:ann.strong@gmail.com'))])
-
-    for triple in person_template.expand(instance_params, as_nt=True):
-        print(triple)

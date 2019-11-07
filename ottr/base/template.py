@@ -11,6 +11,10 @@ class AbstractTemplate(ABC):
         self._name = name
         self._parameters = dict()
 
+    @property
+    def name(self):
+        return self._name
+
     @abstractmethod
     def expand(self, parameters, as_nt=False):
         """Returns a generator that expands the template"""
