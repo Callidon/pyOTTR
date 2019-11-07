@@ -1,6 +1,9 @@
 # parser.py
 # Author: Thomas MINIER - MIT License 2019
 from ottr.parsers.pottr.lexer import lex_template_pottr
+from ottr.base.base_templates import OttrTriple
+from ottr.base.parameter import ConcreteParameter, VariableParameter
+from ottr.base.utils import OTTR_TRIPLE_URI
 from rdflib import Graph, URIRef, Variable, BNode
 from rdflib.namespace import RDFS
 from rdflib.namespace import NamespaceManager
@@ -25,18 +28,28 @@ def parse_template_parameter(param, position, nsm=None):
 
 def parse_template_instance(instance, nsm=None):
     """Parse an OTTR template instance"""
-    template_instance = dict()
-    template_instance['name'] = parse_term(instance.name, nsm=nsm)
-    # parse instance parameters
-    instance_params = list()
-    for i in range(len(instance.parameters.asList())):
-        current_param = dict()
-        current_param['position'] = i
-        current_param['value'] = parse_term(instance.parameters[i], nsm=nsm)
-        # save parameter
-        instance_params.append(current_param)
-    template_instance['parameters'] = instance_params
-    return template_instance
+    template_name = parse_term(instance.name, nsm=nsm)
+
+    # case 1: base template ottr:Triple
+    if template_name == OTTR_TRIPLE_URI:
+        # TODO check that the instance has only 3 parameters
+        params = list()
+        for i in range(len(instance.parameters.asList())):
+            value = parse_term(instance.parameters[i], nsm=nsm)
+            if type(value) is Variable:
+                params.append(VariableParameter(value))
+            else:
+                params.append(ConcreteParameter(value))
+        return OttrTriple(params[0], params[1], params[2])
+
+    # case 2: base template ottr:NullableTriple
+    # TODO
+
+    # case 2: a non-base template instance
+    # TODO store the template def. for now, and then inline it until
+    # there is only base template instance inside the template definition
+    # This will greatly simplify processing and boost perfs, as we will avoid large recursions
+    return None
 
 def parse_template_pottr(text):
     """Parse a set of pOTTR template definitions and returns the list of all OTTR templates."""
@@ -97,4 +110,10 @@ if __name__ == "__main__":
         } .
     """)
 
-    print(parsed)
+    bindings = dict()
+    bindings[Variable('?firstName')] = URIRef('http://example.org#Alice')
+
+    for instance in parsed[0]['instances']:
+        print('------------------')
+        for triple in instance.expand(bindings, as_nt=True):
+            print(triple)

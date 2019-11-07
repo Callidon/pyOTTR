@@ -7,7 +7,7 @@ class InstanceParameter(ABC):
     """An instance parameter"""
 
     def __init__(self, value, constraints=list()):
-        super(Parameter, self).__init__()
+        super(InstanceParameter, self).__init__()
         self._value = value
         self._constraints = constraints
 
@@ -16,7 +16,7 @@ class InstanceParameter(ABC):
         self._constraints += constraints
 
     @abstractmethod
-    def evaluate(self, bindings=dict()):
+    def evaluate(self, bindings=dict(), as_nt=False):
         """Evaluate the parameter using an optional set of bindings"""
         pass
 
@@ -27,18 +27,18 @@ class ConcreteParameter(InstanceParameter):
     def __init__(self, value, constraints=list()):
         super(ConcreteParameter, self).__init__(value, constraints)
 
-    def evaluate(self, bindings=dict()):
-        return self._value
+    def evaluate(self, bindings=dict(), as_nt=False):
+        return self._value.n3() if as_nt else self._value
 
 
-class VariableParameter(object):
+class VariableParameter(InstanceParameter):
     """A variable parameter, i.e., a SPARQL variable"""
 
     def __init__(self, value, constraints=list()):
         super(VariableParameter, self).__init__(value, constraints)
 
-    def evaluate(self, bindings=dict()):
+    def evaluate(self, bindings=dict(), as_nt=False):
         if self._value in bindings:
             # TODO add constraints checking
-            return bindings[self._value]
+            return bindings[self._value].n3() if as_nt else bindings[self._value]
         return OTTR('none')

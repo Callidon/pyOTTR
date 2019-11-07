@@ -4,3 +4,6 @@ from rdflib.namespace import Namespace
 
 # OTTR namespace
 OTTR = Namespace('http://ns.ottr.xyz/0.4/')
+
+# URI for OTTR base triple template
+OTTR_TRIPLE_URI = OTTR.Triple
