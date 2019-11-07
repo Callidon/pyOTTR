@@ -1,7 +1,7 @@
 # lexer.py
 # Author: Thomas MINIER - MIT License 2019
 import re
-from pyparsing import Regex, Group, Word, Optional, OneOrMore, ZeroOrMore, Literal, Or, LineEnd
+from pyparsing import Regex, Group, Word, Optional, OneOrMore, ZeroOrMore, Literal, MatchFirst, LineEnd
 
 # ----- General terms ------
 
@@ -23,7 +23,7 @@ r_variable = re.compile(r'\?([A-Za-z0-9]+)')
 comma = Literal(',').suppress()
 
 # a RDF IRI
-iri = Or([Regex(r_uriref), Regex(r_uriprefix)])
+iri = MatchFirst([Regex(r_uriref), Regex(r_uriprefix)])
 
 # a RDF Blank Node
 bnode = Regex(r_nodeid)
@@ -35,10 +35,10 @@ variable = Regex(r_variable)
 literal = Regex(r_literal)
 
 # An IRI or a Variable
-iriOrVariable = Or([iri, variable])
+iriOrVariable = MatchFirst([iri, variable])
 
 # Any valid RDF terms
-rdfTerm = Or([iri, literal, bnode, variable])
+rdfTerm = MatchFirst([iri, literal, bnode, variable])
 
 # ----- OTTR macros ------
 
