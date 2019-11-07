@@ -14,6 +14,7 @@ r_wspace = re.compile(r'[ \t]*')
 r_wspaces = re.compile(r'[ \t]+')
 r_tail = re.compile(r'[ \t]*\.[ \t]*(#.*)?')
 r_uriref = re.compile(uriref)
+r_uriprefix = re.compile(r'([A-Za-z0-9]*):([A-Za-z0-9]*)')
 r_nodeid = re.compile(r'_:([A-Za-z0-9]*)')
 r_literal = re.compile(literal + litinfo)
 r_variable = re.compile(r'\?([A-Za-z0-9]+)')
@@ -22,7 +23,7 @@ r_variable = re.compile(r'\?([A-Za-z0-9]+)')
 comma = Literal(',').suppress()
 
 # a RDF IRI
-iri = Regex(r_uriref)
+iri = Or([Regex(r_uriref), Regex(r_uriprefix)])
 
 # a RDF Blank Node
 bnode = Regex(r_nodeid)
