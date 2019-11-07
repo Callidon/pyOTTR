@@ -55,14 +55,14 @@ paramList = Group(
                 Literal('[').suppress() +
                 ZeroOrMore(param) +
                 Literal(']').suppress()
-            ).setResultsName('paramList')
+            )
 
 # An instance of a template
 # like ottr:Triple (_:person, rdf:type, foaf:Person)
 instance = Group(
-            iri.setResultsName('fnName') +
+            iri.setResultsName('name') +
             Literal('(').suppress() +
-            OneOrMore(rdfTerm + Optional(comma).suppress()).setResultsName('params') +
+            OneOrMore(rdfTerm + Optional(comma).suppress()).setResultsName('parameters') +
             Literal(')').suppress()
         )
 
@@ -79,7 +79,7 @@ instance = Group(
 
 # An OTTR template
 ottrTemplate = Group(
-                iri.setResultsName('templateName') +
+                iri.setResultsName('name') +
                 paramList.setResultsName('parameters') +
                 Literal('::').suppress() +
                 Literal('{').suppress() +
