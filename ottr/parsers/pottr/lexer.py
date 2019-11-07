@@ -1,7 +1,7 @@
 # lexer.py
 # Author: Thomas MINIER - MIT License 2019
 import re
-from pyparsing import Keyword, LineEnd, Literal, MatchFirst, OneOrMore, Optional, Group, Regex, Word, ZeroOrMore
+from pyparsing import CaselessKeyword, Keyword, LineEnd, Literal, MatchFirst, OneOrMore, Optional, Group, Regex, Word, ZeroOrMore
 
 # ----- General terms ------
 
@@ -14,10 +14,11 @@ r_wspace = re.compile(r'[ \t]*')
 r_wspaces = re.compile(r'[ \t]+')
 r_tail = re.compile(r'[ \t]*\.[ \t]*(#.*)?')
 r_uriref = re.compile(uriref)
-r_uriprefix = re.compile(r'([A-Za-z0-9]*):([A-Za-z0-9]*)')
+r_uriprefix = re.compile(r'([A-Za-z0-9]+):([A-Za-z0-9]+)')
 r_nodeid = re.compile(r'_:([A-Za-z0-9]*)')
 r_literal = re.compile(literal + litinfo)
 r_variable = re.compile(r'\?([A-Za-z0-9]+)')
+r_prefix = re.compile(r'[A-Za-z0-9]+')
 
 # a suppressed comma (',')
 comma = Literal(',').suppress()
@@ -39,6 +40,9 @@ iriOrVariable = MatchFirst([iri, variable])
 
 # Any valid RDF terms
 rdfTerm = MatchFirst([iri, literal, bnode, variable])
+
+# A Turtle Prefix
+prefixName = Regex(r_prefix)
 
 # ----- OTTR macros ------
 
@@ -68,15 +72,13 @@ instance = Group(
         )
 
 # An OTTR prefix declaration
-# ottrPrefix = Group(
-#                 Literal("@prefix").suppress() +
-#                 rdfWord.setResultsName('name') +
-#                 Literal(':').suppress() +
-#                 Literal('<').suppress() +
-#                 iri.setResultsName('value') +
-#                 Literal('>').suppress() +
-#                 Literal('.').suppress()
-#             )
+prefixDeclaration = Group(
+                CaselessKeyword("@prefix").suppress() +
+                prefixName.setResultsName('name') +
+                Literal(':').suppress() +
+                iri.setResultsName('value') +
+                Literal('.').suppress()
+            )
 
 # An OTTR template
 ottrTemplate = Group(
@@ -89,7 +91,7 @@ ottrTemplate = Group(
             )
 
 # Several OTTR templates
-ottrRoot = OneOrMore(ottrTemplate + LineEnd().suppress()).setResultsName('templates')
+ottrRoot = ZeroOrMore(prefixDeclaration + LineEnd().suppress()).setResultsName('prefixes') + OneOrMore(ottrTemplate + LineEnd().suppress()).setResultsName('templates')
 
 
 def lex_template_pottr(text):
