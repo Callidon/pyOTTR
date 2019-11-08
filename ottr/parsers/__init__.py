@@ -15,7 +15,7 @@ def parse_templates(text, format="pottr"):
     """
         Parse a set of OTTR template definitions.
         Use the format parameter to set the language used to decalred templates (default to pOTTR).
-        Format currently supported: pOTTR
+        Formats currently supported: pOTTR
     """
     if format.lower() == 'pottr':
         return parse_templates_pottr(text)
@@ -26,7 +26,7 @@ def parse_instances(text, format="pottr"):
     """
         Parse a set of OTTR template instances.
         Use the format parameter to set the language used to decalred templates (default to pOTTR).
-        Format currently supported: pOTTR
+        Formats currently supported: pOTTR
     """
     if format.lower() == 'pottr':
         return parse_instances_pottr(text)

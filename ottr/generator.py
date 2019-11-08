@@ -33,7 +33,7 @@ class OttrGenerator(object):
         return OttrInstances(to_execute)
 
 class OttrInstances(object):
-    """A set of compiled OTTR instances, ready to be executed to produce RDF triples."""
+    """Compiled OTTR instances, ready to be executed to produce RDF triples."""
 
     def __init__(self, to_execute):
         super(OttrInstances, self).__init__()

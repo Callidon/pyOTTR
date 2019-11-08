@@ -129,6 +129,7 @@ def parse_instances_pottr(text):
         ottr_instance['name'] = parse_term(instance.name, nsm=nsm)
         ottr_instance['parameters'] = list()
         # parse all instance's concrete parameters
+        # and save pairs (parameter's position, parameter's RDF value)
         for pos in range(len(instance.parameters)):
             param = (pos, parse_term(instance.parameters[pos], nsm=nsm))
             ottr_instance['parameters'].append(param)
