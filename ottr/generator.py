@@ -1,10 +1,12 @@
 # generator.py
 # Author: Thomas MINIER - MIT License 2019
-from ottr.parsers import parse_templates
+from ottr.parsers import parse_templates, parse_instances
 from rdflib import URIRef, Variable, Literal
 
 class OttrGenerator(object):
-    """docstring for OttrGenerator."""
+    """
+        An OttrGenerator can load OTTR templates definitions and expand them to produce RDF triples.
+    """
 
     def __init__(self):
         super(OttrGenerator, self).__init__()
@@ -15,21 +17,31 @@ class OttrGenerator(object):
         for template in parse_templates(text, format=format):
             self._templates[template.name] = template
 
-    def instanciate(self, format="pottr"):
-        template = self._templates[URIRef('http://example.org#Person')]
-        return OttrInstances([template])
+    def instanciate(self, text, format="pottr"):
+        # parse instances
+        instances = parse_instances(text, format=format)
+        # create pairs of (instance, related template)
+        to_execute = list()
+        for instance in instances:
+            if instance['name'] in self._templates:
+                template = self._templates[instance['name']]
+                exec_parameters = template.format_parameters(instance['parameters'])
+                to_execute.append((template, exec_parameters))
+            else:
+                # TODO report error but do not crash??
+                pass
+        return OttrInstances(to_execute)
 
 class OttrInstances(object):
-    """docstring for OttrInstances."""
+    """A set of compiled OTTR instances, ready to be executed to produce RDF triples."""
 
-    def __init__(self, instances):
+    def __init__(self, to_execute):
         super(OttrInstances, self).__init__()
-        self._instances = instances
+        self._to_execute = to_execute
 
     def execute(self, as_nt=False):
-        for template in self._instances:
-            instance_params = template.format_parameters([(0, Literal('Ann')), (1, Literal('Strong')), (2, URIRef('mailto:ann.strong@gmail.com'))])
-            yield from template.expand(instance_params, as_nt=as_nt)
+        for template, params in self._to_execute:
+            yield from template.expand(params, as_nt=as_nt)
 
 
 # ---- Testing -----
@@ -44,6 +56,9 @@ if __name__ == '__main__':
           ottr:Triple (_:person, foaf:mbox, ?email )
         } .
     """)
-    instances = gen.instanciate()
+    instances = gen.instanciate("""
+        @prefix ex: <http://example.org#>.
+        ex:Person("Ann", "Strong", <mailto:ann.strong@gmail.com>).
+    """)
     for triple in instances.execute(as_nt=True):
         print(triple)

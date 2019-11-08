@@ -1,6 +1,6 @@
 # parser.py
 # Author: Thomas MINIER - MIT License 2019
-from ottr.parsers.pottr.lexer import lex_template_pottr
+from ottr.parsers.pottr.lexer import lex_templates_pottr, lex_instances_pottr
 from ottr.base.base_templates import OttrTriple
 from ottr.base.template import MainTemplate
 from ottr.base.parameter import ConcreteParameter, VariableParameter
@@ -9,6 +9,20 @@ from rdflib import Graph, Variable
 from rdflib.namespace import RDFS
 from rdflib.namespace import NamespaceManager
 from rdflib.util import from_n3
+
+def get_default_nsm():
+    """Get an rdflib NamespaceManager wirh default prefixes configured"""
+    nsm = NamespaceManager(Graph())
+    # add some prefixes commonly used in pOTTR documents
+    nsm.bind('ottr', 'http://ns.ottr.xyz/0.4/')
+    nsm.bind('foaf', 'http://xmlns.com/foaf/0.1/')
+    nsm.bind('dc', 'http://purl.org/dc/elements/1.1/')
+    nsm.bind('owl', 'http://www.w3.org/2002/07/owl#')
+    nsm.bind('ax', 'http://tpl.ottr.xyz/owl/axiom/0.1/')
+    nsm.bind('rstr', 'http://tpl.ottr.xyz/owl/restriction/0.1/')
+    nsm.bind('schema', 'http://schema.org/')
+    nsm.bind('schemas', 'https://schema.org/')
+    return nsm
 
 def parse_term(term, nsm=None):
     """Parse a RDF Term from text format to rdflib format"""
@@ -51,22 +65,13 @@ def parse_template_instance(instance, nsm=None):
     # This will greatly simplify processing and boost perfs, as we will avoid large recursions
     return None
 
-def parse_template_pottr(text):
+def parse_templates_pottr(text):
     """Parse a set of pOTTR template definitions and returns the list of all OTTR templates."""
     # create a RDFLib NamespaceManager to handle automatic prefix expansion
-    nsm = NamespaceManager(Graph())
-    # add some prefixes commonly used in pOTTR documents
-    nsm.bind('ottr', 'http://ns.ottr.xyz/0.4/')
-    nsm.bind('foaf', 'http://xmlns.com/foaf/0.1/')
-    nsm.bind('dc', 'http://purl.org/dc/elements/1.1/')
-    nsm.bind('owl', 'http://www.w3.org/2002/07/owl#')
-    nsm.bind('ax', 'http://tpl.ottr.xyz/owl/axiom/0.1/')
-    nsm.bind('rstr', 'http://tpl.ottr.xyz/owl/restriction/0.1/')
-    nsm.bind('schema', 'http://schema.org/')
-    nsm.bind('schemas', 'https://schema.org/')
+    nsm = get_default_nsm()
 
     # run pOTTR lexer
-    tree = lex_template_pottr(text)
+    tree = lex_templates_pottr(text)
 
     # parse prefixes and register them into the NamespaceManager
     for prefix in tree.prefixes:
@@ -100,3 +105,32 @@ def parse_template_pottr(text):
         # register the new OTTR template
         ottr_templates.append(ottr_template)
     return ottr_templates
+
+
+def parse_instances_pottr(text):
+    """Parse a set of pOTTR instances and returns them as objects."""
+    # create a RDFLib NamespaceManager to handle automatic prefix expansion
+    nsm = get_default_nsm()
+
+    # run pOTTR lexer
+    tree = lex_instances_pottr(text)
+
+    # parse prefixes and register them into the NamespaceManager
+    for prefix in tree.prefixes:
+        uri = prefix.value
+        if uri.startswith('<') and uri.endswith('>'):
+            uri = uri[1: -1]
+        nsm.bind(prefix.name, uri, replace=True)
+
+    # parse each OTTR instance found
+    ottr_instances = list()
+    for instance in tree.instances:
+        ottr_instance = dict()
+        ottr_instance['name'] = parse_term(instance.name, nsm=nsm)
+        ottr_instance['parameters'] = list()
+        # parse all instance's concrete parameters
+        for pos in range(len(instance.parameters)):
+            param = (pos, parse_term(instance.parameters[pos], nsm=nsm))
+            ottr_instance['parameters'].append(param)
+        ottr_instances.append(ottr_instance)
+    return ottr_instances

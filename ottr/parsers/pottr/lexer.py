@@ -41,6 +41,9 @@ iriOrVariable = MatchFirst([iri, variable])
 # Any valid RDF terms
 rdfTerm = MatchFirst([iri, literal, bnode, variable])
 
+# Any valid RDF terms, excluding SPARQL variables
+rdfTermNoVars = MatchFirst([iri, literal, bnode, variable])
+
 # A Turtle Prefix
 prefixName = Regex(r_prefix)
 
@@ -62,14 +65,22 @@ paramList = Group(
                 Literal(']').suppress()
             )
 
-# An instance of a template
-# like ottr:Triple (_:person, rdf:type, foaf:Person)
-instance = Group(
-            iri.setResultsName('name') +
-            Literal('(').suppress() +
-            OneOrMore(rdfTerm + Optional(comma).suppress()).setResultsName('parameters') +
-            Literal(')').suppress()
-        )
+# An instance of a template which may contains variables
+# like ottr:Triple (_:person, rdf:type, ?person)
+instanceWithVars = Group(
+                    iri.setResultsName('name') +
+                    Literal('(').suppress() +
+                    OneOrMore(rdfTerm + Optional(comma).suppress()).setResultsName('parameters') +
+                    Literal(')').suppress()
+                )
+# An instance of a template which cannot contains variables
+# like ottr:Triple (_:person, rdf:type, ?person)
+instanceNoVars = Group(
+                    iri.setResultsName('name') +
+                    Literal('(').suppress() +
+                    OneOrMore(rdfTermNoVars + Optional(comma).suppress()).setResultsName('parameters') +
+                    Literal(')').suppress()
+                )
 
 # An OTTR prefix declaration
 prefixDeclaration = Group(
@@ -86,14 +97,21 @@ ottrTemplate = Group(
                 paramList.setResultsName('parameters') +
                 Literal('::').suppress() +
                 Literal('{').suppress() +
-                ZeroOrMore(instance + Optional(',').suppress()).setResultsName('instances') +
+                ZeroOrMore(instanceWithVars + Optional(',').suppress()).setResultsName('instances') +
                 Literal('}').suppress() + Literal('.').suppress()
             )
 
 # Several OTTR templates
 ottrRoot = ZeroOrMore(prefixDeclaration + LineEnd().suppress()).setResultsName('prefixes') + OneOrMore(ottrTemplate + LineEnd().suppress()).setResultsName('templates')
 
+# Several concrete OTTR instances (with no variables allowed)
+ottrRootInstances = ZeroOrMore(prefixDeclaration + LineEnd().suppress()).setResultsName('prefixes') + OneOrMore(instanceNoVars + Keyword('.').suppress() + Optional(LineEnd()).suppress()).setResultsName('instances')
 
-def lex_template_pottr(text):
-    """Run the lexer on a pOTTR template file"""
+
+def lex_templates_pottr(text):
+    """Run the lexer on a set of pOTTR template defintions"""
     return ottrRoot.parseString(text)
+
+def lex_instances_pottr(text):
+    """Run the lexer on a set of pOTTR instances"""
+    return ottrRootInstances.parseString(text)

@@ -3,7 +3,7 @@
 """
     Lexer and parser utilities for manipulating OTTR template definitions and instances.
 """
-from ottr.parsers.pottr.parser import parse_template_pottr
+from ottr.parsers.pottr.parser import parse_templates_pottr, parse_instances_pottr
 
 __all__ = [
     'parse_templates',
@@ -18,7 +18,7 @@ def parse_templates(text, format="pottr"):
         Format currently supported: pOTTR
     """
     if format.lower() == 'pottr':
-        return parse_template_pottr(text)
+        return parse_templates_pottr(text)
     raise TypeError("Unsupported language '{}'. Only the pOTTR format is currently supported.".format(format))
 
 
@@ -29,5 +29,5 @@ def parse_instances(text, format="pottr"):
         Format currently supported: pOTTR
     """
     if format.lower() == 'pottr':
-        return None
+        return parse_instances_pottr(text)
     raise TypeError("Unsupported language '{}'. Only the pOTTR format is currently supported.".format(format))
