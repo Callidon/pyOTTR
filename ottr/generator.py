@@ -1,6 +1,6 @@
 # generator.py
 # Author: Thomas MINIER - MIT License 2019
-from ottr.parsers.pottr import parse_template_pottr
+from ottr.parsers import parse_templates
 from rdflib import URIRef, Variable, Literal
 
 class OttrGenerator(object):
@@ -10,12 +10,12 @@ class OttrGenerator(object):
         super(OttrGenerator, self).__init__()
         self._templates = dict()
 
-    def loadTemplates(self, text):
+    def loadTemplates(self, text, format="pottr"):
         """Load a set of pOTTR template definitions"""
-        for template in parse_template_pottr(text):
+        for template in parse_templates(text, format=format):
             self._templates[template.name] = template
 
-    def instanciate(self):
+    def instanciate(self, format="pottr"):
         template = self._templates[URIRef('http://example.org#Person')]
         return OttrInstances([template])
 
