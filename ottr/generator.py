@@ -12,12 +12,12 @@ class OttrGenerator(object):
         super(OttrGenerator, self).__init__()
         self._templates = dict()
 
-    def loadTemplates(self, text, format="pottr"):
+    def loadTemplates(self, text, format="stottr"):
         """Load a set of pOTTR template definitions"""
         for template in parse_templates(text, format=format):
             self._templates[template.name] = template
 
-    def instanciate(self, text, format="pottr"):
+    def instanciate(self, text, format="stottr"):
         # parse instances
         instances = parse_instances(text, format=format)
         # create pairs of (instance, related template)

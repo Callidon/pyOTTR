@@ -47,7 +47,7 @@ rdfTermNoVars = MatchFirst([iri, literal, bnode, variable])
 # A Turtle Prefix
 prefixName = Regex(r_prefix)
 
-# ----- OTTR macros ------
+# ----- stOTTR language rules ------
 
 # A template parameter definition, with optional type and nonblank
 # For example: ?iri or xsd:string ?literal or ! otrr:IRI ?iri
@@ -82,7 +82,7 @@ instanceNoVars = Group(
                     Literal(')').suppress()
                 )
 
-# An OTTR prefix declaration
+# A stOTTR prefix declaration
 prefixDeclaration = Group(
                 CaselessKeyword("@prefix").suppress() +
                 prefixName.setResultsName('name') +
@@ -91,7 +91,7 @@ prefixDeclaration = Group(
                 Literal('.').suppress()
             )
 
-# An OTTR template
+# A stOTTR template
 ottrTemplate = Group(
                 iri.setResultsName('name') +
                 paramList.setResultsName('parameters') +
@@ -101,17 +101,17 @@ ottrTemplate = Group(
                 Literal('}').suppress() + Literal('.').suppress()
             )
 
-# Several OTTR templates
+# Several stOTTR templates
 ottrRoot = ZeroOrMore(prefixDeclaration + LineEnd().suppress()).setResultsName('prefixes') + OneOrMore(ottrTemplate + LineEnd().suppress()).setResultsName('templates')
 
-# Several concrete OTTR instances (with no variables allowed)
+# Several concrete stOTTR instances (with no variables allowed)
 ottrRootInstances = ZeroOrMore(prefixDeclaration + LineEnd().suppress()).setResultsName('prefixes') + OneOrMore(instanceNoVars + Keyword('.').suppress() + Optional(LineEnd()).suppress()).setResultsName('instances')
 
 
-def lex_templates_pottr(text):
-    """Run the lexer on a set of pOTTR template defintions"""
+def lex_templates_stottr(text):
+    """Run the lexer on a set of stOTTR template defintions"""
     return ottrRoot.parseString(text)
 
-def lex_instances_pottr(text):
-    """Run the lexer on a set of pOTTR instances"""
+def lex_instances_stottr(text):
+    """Run the lexer on a set of stOTTR instances"""
     return ottrRootInstances.parseString(text)

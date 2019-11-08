@@ -1,6 +1,6 @@
 # parser.py
 # Author: Thomas MINIER - MIT License 2019
-from ottr.parsers.pottr.lexer import lex_templates_pottr, lex_instances_pottr
+from ottr.parsers.stottr.lexer import lex_templates_stottr, lex_instances_stottr
 from ottr.base.base_templates import OttrTriple
 from ottr.base.template import MainTemplate
 from ottr.base.parameter import ConcreteParameter, VariableParameter
@@ -41,7 +41,7 @@ def parse_template_parameter(param, nsm=None):
     return template_param
 
 def parse_template_instance(instance, nsm=None):
-    """Parse an OTTR template instance"""
+    """Parse a stOTTR template instance"""
     template_name = parse_term(instance.name, nsm=nsm)
 
     # case 1: base template ottr:Triple
@@ -65,13 +65,13 @@ def parse_template_instance(instance, nsm=None):
     # This will greatly simplify processing and boost perfs, as we will avoid large recursions
     return None
 
-def parse_templates_pottr(text):
-    """Parse a set of pOTTR template definitions and returns the list of all OTTR templates."""
+def parse_templates_stottr(text):
+    """Parse a set of stOTTR template definitions and returns the list of all OTTR templates."""
     # create a RDFLib NamespaceManager to handle automatic prefix expansion
     nsm = get_default_nsm()
 
     # run pOTTR lexer
-    tree = lex_templates_pottr(text)
+    tree = lex_templates_stottr(text)
 
     # parse prefixes and register them into the NamespaceManager
     for prefix in tree.prefixes:
@@ -107,13 +107,13 @@ def parse_templates_pottr(text):
     return ottr_templates
 
 
-def parse_instances_pottr(text):
-    """Parse a set of pOTTR instances and returns them as objects."""
+def parse_instances_stottr(text):
+    """Parse a set of stOTTR instances and returns them as objects."""
     # create a RDFLib NamespaceManager to handle automatic prefix expansion
     nsm = get_default_nsm()
 
     # run pOTTR lexer
-    tree = lex_instances_pottr(text)
+    tree = lex_instances_stottr(text)
 
     # parse prefixes and register them into the NamespaceManager
     for prefix in tree.prefixes:
