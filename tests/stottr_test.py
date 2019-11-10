@@ -31,3 +31,29 @@ def test_simple_generation():
         # remove triple from the list of expected values
         expected.remove(triple)
     assert len(expected) == 0
+
+def test_recursive_template():
+    expected = [
+        (BNode("person"), RDF.type, FOAF.Person),
+        (BNode("person"), FOAF.firstName, Literal("Ann"))
+    ]
+    gen = OttrGenerator()
+    gen.loadTemplates("""
+        @prefix ex: <http://example.org#>.
+        ex:FirstName [?uri, ?firstName] :: {
+            ottr:Triple (?uri, foaf:firstName, ?firstName )
+        } .
+        ex:Person[ ?firstName ] :: {
+          o-rdf:Type (_:person, foaf:Person ),
+          ex:FirstName (_:person, ?firstName)
+        } .
+    """)
+    instances = gen.instanciate("""
+        @prefix ex: <http://example.org#>.
+        ex:Person("Ann").
+    """)
+    for triple in instances.execute(as_nt=False):
+        assert triple in expected
+        # remove triple from the list of expected values
+        expected.remove(triple)
+    assert len(expected) == 0
