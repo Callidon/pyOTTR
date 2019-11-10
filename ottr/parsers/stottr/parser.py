@@ -99,22 +99,15 @@ def parse_templates_stottr(text):
         # ottr_template = dict()
         template_name = parse_term(template.name, nsm=nsm)
 
-        # parse parameters
-        template_params = list()
-        for pos in range(len(template.parameters.asList())):
-            parameter = parse_template_parameter(template.parameters[pos], nsm=nsm)
-            # TODO handle parameter better than that
-            template_params.append((parameter['name'], pos))
-
         # parse instances
-        template_instances = list()
-        for instance in template.instances:
-            template_instances.append(parse_template_instance(instance, nsm=nsm))
+        template_instances = [parse_template_instance(v, nsm=nsm) for v in template.instances]
 
-        # create the OTTR template & register its parameters
+        # create the OTTR template &
         ottr_template = MainTemplate(template_name, template_instances)
-        for name, position in template_params:
-            ottr_template.add_parameter(name, position)
+        # parse and register the template's parameters
+        for position in range(len(template.parameters.asList())):
+            parameter = parse_template_parameter(template.parameters[position], nsm=nsm)
+            ottr_template.add_parameter(parameter['name'], position)
         # register the new OTTR template
         ottr_templates.append(ottr_template)
     return ottr_templates
