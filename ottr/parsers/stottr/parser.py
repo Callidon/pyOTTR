@@ -2,7 +2,7 @@
 # Author: Thomas MINIER - MIT License 2019
 from ottr.parsers.stottr.lexer import lex_templates_stottr, lex_instances_stottr
 from ottr.base.base_templates import OttrLabel, OttrTriple, OttrType
-from ottr.base.template import MainTemplate
+from ottr.base.template import MainTemplate, NonBaseInstance
 from ottr.base.parameter import ConcreteParameter, VariableParameter
 from ottr.base.utils import OTTR_LABEL_URI, OTTR_TRIPLE_URI, OTTR_TYPE_URI
 from rdflib import Graph, Variable
@@ -44,12 +44,13 @@ def parse_term(term, nsm=None):
 
 def parse_instance_parameters(parameters, nsm=None):
     params = list()
-    for parameter in parameters:
+    for ind in range(len(parameters)):
+        parameter = parameters[ind]
         value = parse_term(parameter, nsm=nsm)
         if type(value) is Variable:
-            params.append(VariableParameter(value))
+            params.append(VariableParameter(value, ind))
         else:
-            params.append(ConcreteParameter(value))
+            params.append(ConcreteParameter(value, ind))
     return params
 
 def parse_template_parameter(param, nsm=None):
@@ -74,10 +75,7 @@ def parse_template_instance(instance, nsm=None):
         return TemplateConstructor(*params)
 
     # case 2: a non-base template instance
-    # TODO store the template def. for now, and then inline it until
-    # there is only base template instance inside the template definition
-    # This will greatly simplify processing and boost perfs, as we will avoid large recursions
-    return None
+    return NonBaseInstance(template_name, parse_instance_parameters(instance.parameters, nsm=nsm))
 
 def parse_templates_stottr(text):
     """Parse a set of stOTTR template definitions and returns the list of all OTTR templates."""

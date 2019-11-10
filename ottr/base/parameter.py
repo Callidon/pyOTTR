@@ -7,10 +7,23 @@ from rdflib import URIRef
 class InstanceParameter(ABC):
     """An instance parameter"""
 
-    def __init__(self, value, constraints=list()):
+    def __init__(self, value, position, constraints=list()):
         super(InstanceParameter, self).__init__()
         self._value = value
+        self._position = position
         self._constraints = constraints
+
+    @property
+    def value(self):
+        return self._value
+
+    @property
+    def position(self):
+        return self._position
+
+    @property
+    def is_bound(self):
+        return False
 
     def update_constraints(new_constraints):
         """Update the list of current constraints with new ones"""
@@ -25,8 +38,12 @@ class InstanceParameter(ABC):
 class ConcreteParameter(InstanceParameter):
     """An instance that evaluates to a constant, i.e., a RDF term."""
 
-    def __init__(self, value, constraints=list()):
-        super(ConcreteParameter, self).__init__(value, constraints)
+    def __init__(self, value, position, constraints=list()):
+        super(ConcreteParameter, self).__init__(value, position, constraints)
+
+    @property
+    def is_bound(self):
+        return True
 
     def evaluate(self, bindings=dict(), as_nt=False):
         return self._value.n3() if as_nt else self._value
@@ -34,15 +51,15 @@ class ConcreteParameter(InstanceParameter):
 class URIParameter(ConcreteParameter):
     """A ConcreteParameter that evaluates to an URI"""
 
-    def __init__(self, uri):
-        super(URIParameter, self).__init__(URIRef(uri))
+    def __init__(self, uri, position):
+        super(URIParameter, self).__init__(URIRef(uri), position)
 
 
 class VariableParameter(InstanceParameter):
     """A variable parameter, i.e., a SPARQL variable"""
 
-    def __init__(self, value, constraints=list()):
-        super(VariableParameter, self).__init__(value, constraints)
+    def __init__(self, value, position, constraints=list()):
+        super(VariableParameter, self).__init__(value, position, constraints)
 
     def evaluate(self, bindings=dict(), as_nt=False):
         if self._value in bindings:

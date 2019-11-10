@@ -17,7 +17,11 @@ class OttrTriple(AbstractTemplate):
         self._predicate_param = predicate_param
         self._object_param = object_param
 
-    def expand(self, parameters, as_nt=False):
+    def is_base(self):
+        """Returns True if the template is a base template, False otherwise"""
+        return True
+
+    def expand(self, parameters, all_templates, as_nt=False):
         """Returns a generator that expands the template"""
         yield (
                 self._subject_param.evaluate(bindings=parameters, as_nt=as_nt),
@@ -29,12 +33,12 @@ class OttrType(OttrTriple):
     """The o-rdf:Type base template, equivalent to ottr:Triple(?s, rdf:type, ?type)"""
 
     def __init__(self, subject_param, object_param):
-        super(OttrType, self).__init__(subject_param, URIParameter(RDF.type), object_param)
+        super(OttrType, self).__init__(subject_param, URIParameter(RDF.type, 1), object_param)
         self._name = OTTR_TYPE_URI
 
 class OttrLabel(OttrTriple):
     """The o-rdfs:Label base template, equivalent to ottr:Triple(?s, rdfs:label, ?type)"""
 
     def __init__(self, subject_param, object_param):
-        super(OttrLabel, self).__init__(subject_param, URIParameter(RDFS.label), object_param)
+        super(OttrLabel, self).__init__(subject_param, URIParameter(RDFS.label, 1), object_param)
         self._name = OTTR_LABEL_URI
