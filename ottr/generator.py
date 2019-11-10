@@ -42,23 +42,3 @@ class OttrInstances(object):
     def execute(self, as_nt=False):
         for template, params in self._to_execute:
             yield from template.expand(params, as_nt=as_nt)
-
-
-# ---- Testing -----
-if __name__ == '__main__':
-    gen = OttrGenerator()
-    gen.loadTemplates("""
-        @prefix ex: <http://example.org#>.
-        ex:Person[ ?firstName, ?lastName, ?email ] :: {
-          ottr:Triple (_:person, rdf:type, foaf:Person ),
-          ottr:Triple (_:person, foaf:firstName, ?firstName ),
-          ottr:Triple (_:person, foaf:lastName, ?lastName ),
-          ottr:Triple (_:person, foaf:mbox, ?email )
-        } .
-    """)
-    instances = gen.instanciate("""
-        @prefix ex: <http://example.org#>.
-        ex:Person("Ann", "Strong", <mailto:ann.strong@gmail.com>).
-    """)
-    for triple in instances.execute(as_nt=True):
-        print(triple)
