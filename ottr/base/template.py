@@ -16,7 +16,7 @@ class AbstractTemplate(ABC):
         return self._name
 
     @abstractmethod
-    def expand(self, parameters, all_templates, as_nt=False):
+    def expand(self, arguments, all_templates, as_nt=False):
         """Returns a generator that expands the template"""
         pass
 
@@ -25,16 +25,16 @@ class AbstractTemplate(ABC):
         if position not in self._parameters:
             self._parameters[position] = name
 
-    def format_parameters(self, params):
-        """Format a list of execution parameters, i.e., a list of tuple (position, value), so that they can be used for template expansion"""
-        res = dict()
-        for position, value in params:
+    def format_arguments(self, arguments):
+        """Format a list of execution arguments, i.e., a list of tuple (position, value), so that they can be used for template expansion"""
+        args = dict()
+        for position, value in arguments:
             if position in self._parameters:
-                res[self._parameters[position]] = value
+                args[self._parameters[position]] = value
             else:
                 # TODO do something???
                 pass
-        return res
+        return args
 
 
 class MainTemplate(AbstractTemplate):
@@ -44,34 +44,33 @@ class MainTemplate(AbstractTemplate):
         super(MainTemplate, self).__init__(name)
         self._instances = instances
 
-    def expand(self, parameters, all_templates, as_nt=False):
+    def expand(self, arguments, all_templates, as_nt=False):
         """Returns a generator that expands the template"""
         for instance in self._instances:
-            yield from instance.expand(parameters, all_templates, as_nt=as_nt)
+            # TODO check that all arguments' values are compatibles with the template declaration???
+            yield from instance.expand(arguments, all_templates, as_nt=as_nt)
 
 class NonBaseInstance(AbstractTemplate):
     """
         A non-base OTTR Template instance.
     """
 
-    def __init__(self, name, instance_parameters):
+    def __init__(self, name, instance_arguments):
         super(NonBaseInstance, self).__init__(name)
-        self._instance_parameters = instance_parameters
+        self._instance_arguments = [(x.position, x.value) for x in instance_arguments if x.is_bound]
 
     def is_base(self):
         """Returns True if the template is a base template, False otherwise"""
         return False
 
-    def expand(self, parameters, all_templates, as_nt=False):
+    def expand(self, arguments, all_templates, as_nt=False):
         if self._name in all_templates:
             template = all_templates[self._name]
-            # compute instance parameters to inject
-            current_params = template.format_parameters([(x.position, x.value) for x in self._instance_parameters if x.is_bound])
-            # merge new parameters with previous ones
-            new_parameters = dict()
-            new_parameters.update(parameters)
-            new_parameters.update(current_params)
-            # recusively expand the template instance
-            yield from template.expand(new_parameters, all_templates, as_nt=as_nt)
+            # merge new arguments with previous ones
+            new_arguments = dict()
+            new_arguments.update(arguments)
+            new_arguments.update(template.format_arguments(self._instance_arguments))
+            # recursively expand the template instance
+            yield from template.expand(new_arguments, all_templates, as_nt=as_nt)
         else:
             raise Exception("Cannot expand the unkown OTTR template '{}'".format(self._name.n3()))

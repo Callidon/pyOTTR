@@ -70,7 +70,7 @@ paramList = Group(
 instanceWithVars = Group(
                     iri.setResultsName('name') +
                     Literal('(').suppress() +
-                    OneOrMore(rdfTerm + Optional(comma).suppress()).setResultsName('parameters') +
+                    OneOrMore(rdfTerm + Optional(comma).suppress()).setResultsName('arguments') +
                     Literal(')').suppress()
                 )
 # An instance of a template which cannot contains variables
@@ -78,7 +78,7 @@ instanceWithVars = Group(
 instanceNoVars = Group(
                     iri.setResultsName('name') +
                     Literal('(').suppress() +
-                    OneOrMore(rdfTermNoVars + Optional(comma).suppress()).setResultsName('parameters') +
+                    OneOrMore(rdfTermNoVars + Optional(comma).suppress()).setResultsName('arguments') +
                     Literal(')').suppress()
                 )
 

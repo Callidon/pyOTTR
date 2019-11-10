@@ -3,7 +3,7 @@
 from ottr.parsers.stottr.lexer import lex_templates_stottr, lex_instances_stottr
 from ottr.base.base_templates import OttrLabel, OttrTriple, OttrType
 from ottr.base.template import MainTemplate, NonBaseInstance
-from ottr.base.parameter import ConcreteParameter, VariableParameter
+from ottr.base.argument import ConcreteArgument, VariableArgument
 from ottr.base.utils import OTTR_LABEL_URI, OTTR_TRIPLE_URI, OTTR_TYPE_URI
 from rdflib import Graph, Variable
 from rdflib.namespace import RDFS
@@ -42,16 +42,17 @@ def parse_term(term, nsm=None):
         return Variable(term[1:])
     return from_n3(term, nsm=nsm)
 
-def parse_instance_parameters(parameters, nsm=None):
-    params = list()
-    for ind in range(len(parameters)):
-        parameter = parameters[ind]
-        value = parse_term(parameter, nsm=nsm)
+def parse_instance_arguments(arguments, nsm=None):
+    """Parse the arguments of a template instance"""
+    args = list()
+    for ind in range(len(arguments)):
+        argument = arguments[ind]
+        value = parse_term(argument, nsm=nsm)
         if type(value) is Variable:
-            params.append(VariableParameter(value, ind))
+            args.append(VariableArgument(value, ind))
         else:
-            params.append(ConcreteParameter(value, ind))
-    return params
+            args.append(ConcreteArgument(value, ind))
+    return args
 
 def parse_template_parameter(param, nsm=None):
     """Parse an OTTR template parameter"""
@@ -69,13 +70,13 @@ def parse_template_instance(instance, nsm=None):
     # case 1: handle base templates (using a generic method)
     if template_name in BASE_TEMPLATES:
         TemplateConstructor, nb_arguments = BASE_TEMPLATES[template_name]
-        if len(instance.parameters) != nb_arguments:
-            raise Exception("The {} template takes exactly {} arguments, but {} were provided".format(template_name.n3(), nb_arguments, len(instance.parameters)))
-        params = parse_instance_parameters(instance.parameters, nsm=nsm)
+        if len(instance.arguments) != nb_arguments:
+            raise Exception("The {} template takes exactly {} arguments, but {} were provided".format(template_name.n3(), nb_arguments, len(instance.arguments)))
+        params = parse_instance_arguments(instance.arguments, nsm=nsm)
         return TemplateConstructor(*params)
 
     # case 2: a non-base template instance
-    return NonBaseInstance(template_name, parse_instance_parameters(instance.parameters, nsm=nsm))
+    return NonBaseInstance(template_name, parse_instance_arguments(instance.arguments, nsm=nsm))
 
 def parse_templates_stottr(text):
     """Parse a set of stOTTR template definitions and returns the list of all OTTR templates."""
@@ -139,11 +140,11 @@ def parse_instances_stottr(text):
     for instance in tree.instances:
         ottr_instance = dict()
         ottr_instance['name'] = parse_term(instance.name, nsm=nsm)
-        ottr_instance['parameters'] = list()
-        # parse all instance's concrete parameters
-        # and save pairs (parameter's position, parameter's RDF value)
-        for pos in range(len(instance.parameters)):
-            param = (pos, parse_term(instance.parameters[pos], nsm=nsm))
-            ottr_instance['parameters'].append(param)
+        ottr_instance['arguments'] = list()
+        # parse all instance's arguments
+        # and save pairs (arguments's position, arguments's RDF value)
+        for pos in range(len(instance.arguments)):
+            arg = (pos, parse_term(instance.arguments[pos], nsm=nsm))
+            ottr_instance['arguments'].append(arg)
         ottr_instances.append(ottr_instance)
     return ottr_instances

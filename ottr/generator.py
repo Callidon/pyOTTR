@@ -25,7 +25,7 @@ class OttrGenerator(object):
         for instance in instances:
             if instance['name'] in self._templates:
                 template = self._templates[instance['name']]
-                exec_parameters = template.format_parameters(instance['parameters'])
+                exec_parameters = template.format_arguments(instance['arguments'])
                 to_execute.append((template, exec_parameters))
             else:
                 # TODO report error but do not crash??
