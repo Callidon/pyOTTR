@@ -96,7 +96,6 @@ def parse_templates_stottr(text):
     # parse each template definition found
     ottr_templates = list()
     for template in tree.templates:
-        # ottr_template = dict()
         template_name = parse_term(template.name, nsm=nsm)
 
         # parse instances
