@@ -16,7 +16,7 @@ def test_simple_generation():
     gen.loadTemplates("""
         @prefix ex: <http://example.org#>.
         ex:Person[ ?firstName, ?lastName, ?email ] :: {
-          ottr:Triple (_:person, rdf:type, foaf:Person ),
+          o-rdf:Type (_:person, foaf:Person ),
           ottr:Triple (_:person, foaf:firstName, ?firstName ),
           ottr:Triple (_:person, foaf:lastName, ?lastName ),
           ottr:Triple (_:person, foaf:mbox, ?email )

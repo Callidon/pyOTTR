@@ -2,6 +2,7 @@
 # Author: Thomas MINIER - MIT License 2019
 from abc import ABC, abstractmethod
 from ottr.base.utils import OTTR
+from rdflib import URIRef
 
 class InstanceParameter(ABC):
     """An instance parameter"""
@@ -29,6 +30,12 @@ class ConcreteParameter(InstanceParameter):
 
     def evaluate(self, bindings=dict(), as_nt=False):
         return self._value.n3() if as_nt else self._value
+
+class URIParameter(ConcreteParameter):
+    """A ConcreteParameter that evaluates to an URI"""
+
+    def __init__(self, uri):
+        super(URIParameter, self).__init__(URIRef(uri))
 
 
 class VariableParameter(InstanceParameter):

@@ -1,14 +1,22 @@
 # parser.py
 # Author: Thomas MINIER - MIT License 2019
 from ottr.parsers.stottr.lexer import lex_templates_stottr, lex_instances_stottr
-from ottr.base.base_templates import OttrTriple
+from ottr.base.base_templates import OttrLabel, OttrTriple, OttrType
 from ottr.base.template import MainTemplate
 from ottr.base.parameter import ConcreteParameter, VariableParameter
-from ottr.base.utils import OTTR_TRIPLE_URI
+from ottr.base.utils import OTTR_LABEL_URI, OTTR_TRIPLE_URI, OTTR_TYPE_URI
 from rdflib import Graph, Variable
 from rdflib.namespace import RDFS
 from rdflib.namespace import NamespaceManager
 from rdflib.util import from_n3
+
+# All base templates are registered here,
+# as tuples (template constructor, expected nb of arguments)
+BASE_TEMPLATES = {
+    OTTR_TRIPLE_URI: (OttrTriple, 3),
+    OTTR_TYPE_URI: (OttrType, 2),
+    OTTR_LABEL_URI: (OttrLabel, 2)
+}
 
 def get_default_nsm():
     """Get an rdflib NamespaceManager wirh default prefixes configured"""
@@ -22,6 +30,9 @@ def get_default_nsm():
     nsm.bind('rstr', 'http://tpl.ottr.xyz/owl/restriction/0.1/')
     nsm.bind('schema', 'http://schema.org/')
     nsm.bind('schemas', 'https://schema.org/')
+    # OTTR base template library
+    nsm.bind('o-rdf', 'http://tpl.ottr.xyz/rdf/0.1/')
+    nsm.bind('o-rdfs', 'http://tpl.ottr.xyz/rdfs/0.1/')
     return nsm
 
 def parse_term(term, nsm=None):
@@ -30,6 +41,16 @@ def parse_term(term, nsm=None):
     if term.startswith('?'):
         return Variable(term[1:])
     return from_n3(term, nsm=nsm)
+
+def parse_instance_parameters(parameters, nsm=None):
+    params = list()
+    for parameter in parameters:
+        value = parse_term(parameter, nsm=nsm)
+        if type(value) is Variable:
+            params.append(VariableParameter(value))
+        else:
+            params.append(ConcreteParameter(value))
+    return params
 
 def parse_template_parameter(param, nsm=None):
     """Parse an OTTR template parameter"""
@@ -44,20 +65,13 @@ def parse_template_instance(instance, nsm=None):
     """Parse a stOTTR template instance"""
     template_name = parse_term(instance.name, nsm=nsm)
 
-    # case 1: base template ottr:Triple
-    if template_name == OTTR_TRIPLE_URI:
-        # TODO check that the instance has only 3 parameters
-        params = list()
-        for parameter in instance.parameters:
-            value = parse_term(parameter, nsm=nsm)
-            if type(value) is Variable:
-                params.append(VariableParameter(value))
-            else:
-                params.append(ConcreteParameter(value))
-        return OttrTriple(params[0], params[1], params[2])
-
-    # case 2: base template ottr:NullableTriple
-    # TODO
+    # case 1: handle base templates (using a generic method)
+    if template_name in BASE_TEMPLATES:
+        TemplateConstructor, nb_arguments = BASE_TEMPLATES[template_name]
+        if len(instance.parameters) != nb_arguments:
+            raise Exception("The {} template takes exactly {} arguments, but {} were provided".format(template_name.n3(), nb_arguments, len(instance.parameters)))
+        params = parse_instance_parameters(instance.parameters, nsm=nsm)
+        return TemplateConstructor(*params)
 
     # case 2: a non-base template instance
     # TODO store the template def. for now, and then inline it until

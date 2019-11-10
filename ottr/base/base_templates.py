@@ -1,7 +1,9 @@
 # base_templates.py
 # Author: Thomas MINIER - MIT License 2019
 from ottr.base.template import AbstractTemplate
-from ottr.base.utils import OTTR_TRIPLE_URI
+from ottr.base.parameter import URIParameter
+from ottr.base.utils import OTTR_LABEL_URI, OTTR_TRIPLE_URI, OTTR_TYPE_URI
+from rdflib.namespace import RDF, RDFS
 
 class OttrTriple(AbstractTemplate):
     """
@@ -22,3 +24,17 @@ class OttrTriple(AbstractTemplate):
                 self._predicate_param.evaluate(bindings=parameters, as_nt=as_nt),
                 self._object_param.evaluate(bindings=parameters, as_nt=as_nt)
             )
+
+class OttrType(OttrTriple):
+    """The o-rdf:Type base template, equivalent to ottr:Triple(?s, rdf:type, ?type)"""
+
+    def __init__(self, subject_param, object_param):
+        super(OttrType, self).__init__(subject_param, URIParameter(RDF.type), object_param)
+        self._name = OTTR_TYPE_URI
+
+class OttrLabel(OttrTriple):
+    """The o-rdfs:Label base template, equivalent to ottr:Triple(?s, rdfs:label, ?type)"""
+
+    def __init__(self, subject_param, object_param):
+        super(OttrLabel, self).__init__(subject_param, URIParameter(RDFS.label), object_param)
+        self._name = OTTR_LABEL_URI
