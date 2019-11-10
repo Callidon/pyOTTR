@@ -1,7 +1,41 @@
 # template.py
 # Author: Thomas MINIER - MIT License 2019
 from abc import ABC, abstractmethod
+from rdflib import BNode, Literal, URIRef
+from rdflib.namespace import RDFS
+from ottr.base.utils import OTTR_IRI, OTTR_NONE
 
+class TemplateParameter(object):
+    """The parameter of an OTTR Template"""
+
+    def __init__(self, name, param_type, optional, nonblank):
+        super(TemplateParameter, self).__init__()
+        self._name = name
+        self._param_type = param_type
+        self._optional = optional
+        self._nonblank = nonblank
+
+    @property
+    def name(self):
+        """Get the parameter name, i.e., a SPARQL variable"""
+        return self._name
+
+    def validate(self, value):
+        """Assert that an argument can be used for this parameter, i.e., its value is compatible with the parameter definition (type, optional, non blank, etc)"""
+        # assert that the argument's type is correct
+        if self._param_type != RDFS.Resource:
+            # validate uris
+            if self._param_type == OTTR_IRI and type(value) != URIRef:
+                return False
+            elif type(value) == Literal and value.datatype != self._param_type:
+                return False
+        # assert that a non-optional parameter cannot be bound to ottr:None
+        if not self._optional and value == OTTR_NONE:
+            return False
+        # assert that a non blank parameter is not bound to a blank node
+        if self._nonblank and type(value) == BNode:
+            return False
+        return True
 
 class AbstractTemplate(ABC):
     """An abstract OTTR Template."""
@@ -20,19 +54,24 @@ class AbstractTemplate(ABC):
         """Returns a generator that expands the template"""
         pass
 
-    def add_parameter(self, name, position):
+    def add_parameter(self, name, position, param_type=RDFS.Resource, optional=False, nonblank=False):
         """Register a new template parameter"""
         if position not in self._parameters:
-            self._parameters[position] = name
+            self._parameters[position] = TemplateParameter(name, param_type, optional, nonblank)
 
     def format_arguments(self, arguments):
         """Format a list of execution arguments, i.e., a list of tuple (position, value), so that they can be used for template expansion"""
         args = dict()
         for position, value in arguments:
             if position in self._parameters:
-                args[self._parameters[position]] = value
+                # validate that the argument can be used for this parameter
+                if self._parameters[position].validate(value):
+                    args[self._parameters[position].name] = value
+                else:
+                    # TODO report/raise exception ??
+                    pass
             else:
-                # TODO do something???
+                # TODO report/raise exception ??
                 pass
         return args
 
