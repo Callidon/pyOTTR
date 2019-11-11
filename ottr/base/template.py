@@ -83,8 +83,7 @@ class AbstractTemplate(ABC):
                     # TODO report/raise exception ??
                     raise Exception("Invalid argument {} used for parameter \"{}\". Reason : {} ".format(value.n3(), self._parameters[position], error_reason))
             else:
-                # TODO report/raise exception ??
-                pass
+                raise Exception("Missing argument in position {} in template {}".format(position, self._name.n3()))
         return args
 
 
@@ -98,7 +97,6 @@ class MainTemplate(AbstractTemplate):
     def expand(self, arguments, all_templates, as_nt=False):
         """Returns a generator that expands the template"""
         for instance in self._instances:
-            # TODO check that all arguments' values are compatibles with the template declaration???
             yield from instance.expand(arguments, all_templates, as_nt=as_nt)
 
 class NonBaseInstance(AbstractTemplate):
