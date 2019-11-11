@@ -58,7 +58,7 @@ def parse_template_parameter(param, nsm=None):
     """Parse an OTTR template parameter"""
     template_param = dict()
     template_param['name'] = parse_term(param.value, nsm=nsm)
-    template_param['type'] = param.type if len(param.type) > 0 else RDFS.Resource
+    template_param['type'] = parse_term(param.type, nsm=nsm) if len(param.type) > 0 else RDFS.Resource
     template_param['optional'] = True if len(param.optional) > 0 else False
     template_param['nonblank'] = True if len(param.nonblank) > 0 else False
     return template_param
@@ -106,7 +106,7 @@ def parse_templates_stottr(text):
         # parse and register the template's parameters
         for position in range(len(template.parameters.asList())):
             parameter = parse_template_parameter(template.parameters[position], nsm=nsm)
-            ottr_template.add_parameter(parameter['name'], position)
+            ottr_template.add_parameter(parameter['name'], position, param_type=parameter['type'], optional=parameter['optional'], nonblank=parameter['nonblank'])
         # register the new OTTR template
         ottr_templates.append(ottr_template)
     return ottr_templates

@@ -20,22 +20,33 @@ class TemplateParameter(object):
         """Get the parameter name, i.e., a SPARQL variable"""
         return self._name
 
+    def __str__(self):
+        res = "{} {}".format(self._param_type.n3(), self._name.n3())
+        if self._optional:
+            res = "? " + res
+        if self._nonblank:
+            res = "! " + res
+        return res
+
+    def __repr__(self):
+        return self.__str__()
+
     def validate(self, value):
         """Assert that an argument can be used for this parameter, i.e., its value is compatible with the parameter definition (type, optional, non blank, etc)"""
         # assert that the argument's type is correct
         if self._param_type != RDFS.Resource:
             # validate uris
             if self._param_type == OTTR_IRI and type(value) != URIRef:
-                return False
+                return False, "expected an IRI but instead got a {}".format(type(value))
             elif type(value) == Literal and value.datatype != self._param_type:
-                return False
+                return False, "expected a Literal with datatype {} but instead got {}".format(self._param_type.n3(), value.datatype)
         # assert that a non-optional parameter cannot be bound to ottr:None
         if not self._optional and value == OTTR_NONE:
-            return False
+            return False, 'this parameter is not optional, so it cannot be bound to ottr:none.'
         # assert that a non blank parameter is not bound to a blank node
         if self._nonblank and type(value) == BNode:
-            return False
-        return True
+            return False, 'this parameter is non blank, so it cannot be bound to a blank node.'
+        return True, None
 
 class AbstractTemplate(ABC):
     """An abstract OTTR Template."""
@@ -65,11 +76,12 @@ class AbstractTemplate(ABC):
         for position, value in arguments:
             if position in self._parameters:
                 # validate that the argument can be used for this parameter
-                if self._parameters[position].validate(value):
+                is_valid, error_reason = self._parameters[position].validate(value)
+                if is_valid:
                     args[self._parameters[position].name] = value
                 else:
                     # TODO report/raise exception ??
-                    pass
+                    raise Exception("Invalid argument {} used for parameter \"{}\". Reason : {} ".format(value.n3(), self._parameters[position], error_reason))
             else:
                 # TODO report/raise exception ??
                 pass
