@@ -21,7 +21,7 @@ fixtures = [
         } .
     """, """
         @prefix ex: <http://example.org#>.
-        ex:Person("12"^^<http://www.w3.org/2001/XMLSchema#number>).
+        ex:Person("12"^^xsd:number).
     """, """Invalid argument "12"^^<http://www.w3.org/2001/XMLSchema#number> used for parameter "<http://www.w3.org/2001/XMLSchema#integer> ?age". Reason : expected a Literal with datatype <http://www.w3.org/2001/XMLSchema#integer> but instead got http://www.w3.org/2001/XMLSchema#number"""),
     # optional errors
     ("""

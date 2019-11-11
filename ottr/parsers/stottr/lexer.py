@@ -5,16 +5,15 @@ from pyparsing import CaselessKeyword, Keyword, LineEnd, Literal, MatchFirst, On
 
 # ----- General terms ------
 
-uriref = r'<([^:]+:[^\s"<>]+)>'
+uriref = r'(<([^:]+:[^\s"<>]+)>|(([A-Za-z0-9]|-)+):([A-Za-z0-9]+))'
 literal = r'"([^"\\]*(?:\\.[^"\\]*)*)"'
-litinfo = r'(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\^\^' + uriref + r')?'
+litinfo = r'(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\^\^' + uriref  + r')?'
 
 r_line = re.compile(r'([^\r\n]*)(?:\r\n|\r|\n)')
 r_wspace = re.compile(r'[ \t]*')
 r_wspaces = re.compile(r'[ \t]+')
 r_tail = re.compile(r'[ \t]*\.[ \t]*(#.*)?')
 r_uriref = re.compile(uriref)
-r_uriprefix = re.compile(r'(([A-Za-z0-9]|-)+):([A-Za-z0-9]+)')
 r_nodeid = re.compile(r'_:([A-Za-z0-9]*)')
 r_literal = re.compile(literal + litinfo)
 r_variable = re.compile(r'\?([A-Za-z0-9]+)')
@@ -24,7 +23,7 @@ r_prefix = re.compile(r'([A-Za-z0-9]|-)+')
 comma = Literal(',').suppress()
 
 # a RDF IRI
-iri = MatchFirst([Regex(r_uriref), Regex(r_uriprefix)])
+iri = Regex(r_uriref)
 
 # a RDF Blank Node
 bnode = Regex(r_nodeid)
