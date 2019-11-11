@@ -13,7 +13,7 @@ def test_simple_generation():
         (BNode("person"), FOAF.mbox, URIRef("mailto:ann.strong@gmail.com"))
     ]
     gen = OttrGenerator()
-    gen.loadTemplates("""
+    gen.load_templates("""
         @prefix ex: <http://example.org#>.
         ex:Person[ ?firstName, ?lastName, ?email ] :: {
           o-rdf:Type (_:person, foaf:Person ),
@@ -38,7 +38,7 @@ def test_recursive_template():
         (BNode("person"), FOAF.firstName, Literal("Ann"))
     ]
     gen = OttrGenerator()
-    gen.loadTemplates("""
+    gen.load_templates("""
         @prefix ex: <http://example.org#>.
         ex:FirstName [?uri, ?firstName] :: {
             ottr:Triple (?uri, foaf:firstName, ?firstName )

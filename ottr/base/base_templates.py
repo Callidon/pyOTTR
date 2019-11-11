@@ -35,10 +35,3 @@ class OttrType(OttrTriple):
     def __init__(self, subject_arg, object_arg):
         super(OttrType, self).__init__(subject_arg, URIArgument(RDF.type, 1), object_arg)
         self._name = OTTR_TYPE_URI
-
-class OttrLabel(OttrTriple):
-    """The o-rdfs:Label base template, equivalent to ottr:Triple(?s, rdfs:label, ?type)"""
-
-    def __init__(self, subject_arg, object_arg):
-        super(OttrLabel, self).__init__(subject_arg, URIArgument(RDFS.label, 1), object_arg)
-        self._name = OTTR_LABEL_URI

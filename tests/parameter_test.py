@@ -49,7 +49,7 @@ fixtures = [
 @pytest.mark.parametrize("template,instance,expected_err", fixtures)
 def test_valid_parameter(template, instance, expected_err):
     gen = OttrGenerator()
-    gen.loadTemplates(template)
+    gen.load_templates(template)
     try:
         instances = gen.instanciate(instance)
     except Exception as e:

@@ -1,6 +1,7 @@
 # generator.py
 # Author: Thomas MINIER - MIT License 2019
 from ottr.parsers import parse_templates, parse_instances
+from ottr.tpl import RDFS_TEMPLATES
 from rdflib import URIRef, Variable, Literal
 
 class OttrGenerator(object):
@@ -8,11 +9,13 @@ class OttrGenerator(object):
         An OttrGenerator can load OTTR templates definitions and expand them to produce RDF triples.
     """
 
-    def __init__(self):
+    def __init__(self, load_defaults=True):
         super(OttrGenerator, self).__init__()
         self._templates = dict()
+        if load_defaults:
+            self.load_templates(RDFS_TEMPLATES, format="stottr")
 
-    def loadTemplates(self, text, format="stottr"):
+    def load_templates(self, text, format="stottr"):
         """Load a set of pOTTR template definitions"""
         for template in parse_templates(text, format=format):
             self._templates[template.name] = template
