@@ -27,10 +27,10 @@ class OttrTriple(AbstractTemplate):
         """Returns True if the template is a base template, False otherwise"""
         return True
 
-    def expand(self, arguments, all_templates, as_nt=False):
+    def expand(self, arguments, all_templates, bnode_suffix=(0, 0), as_nt=False):
         """Returns a generator that expands the template"""
         yield (
-                self._subject_arg.evaluate(bindings=arguments, as_nt=as_nt),
-                self._predicate_arg.evaluate(bindings=arguments, as_nt=as_nt),
-                self._object_arg.evaluate(bindings=arguments, as_nt=as_nt)
+                self._subject_arg.evaluate(bindings=arguments, bnode_suffix=bnode_suffix, as_nt=as_nt),
+                self._predicate_arg.evaluate(bindings=arguments, bnode_suffix=bnode_suffix, as_nt=as_nt),
+                self._object_arg.evaluate(bindings=arguments, bnode_suffix=bnode_suffix, as_nt=as_nt)
             )

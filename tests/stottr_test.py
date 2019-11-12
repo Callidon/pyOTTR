@@ -18,10 +18,10 @@ fixtures = [
         @prefix ex: <http://example.org#>.
         ex:Person("Ann", "Strong", <mailto:ann.strong@gmail.com>).
     """, [
-        (BNode("person"), RDF.type, FOAF.Person),
-        (BNode("person"), FOAF.firstName, Literal("Ann")),
-        (BNode("person"), FOAF.lastName, Literal("Strong")),
-        (BNode("person"), FOAF.mbox, URIRef("mailto:ann.strong@gmail.com"))
+        (BNode("person_0_1"), RDF.type, FOAF.Person),
+        (BNode("person_0_0"), FOAF.firstName, Literal("Ann")),
+        (BNode("person_0_0"), FOAF.lastName, Literal("Strong")),
+        (BNode("person_0_0"), FOAF.mbox, URIRef("mailto:ann.strong@gmail.com"))
     ]),
     ("""
         @prefix ex: <http://example.org#>.
@@ -36,8 +36,8 @@ fixtures = [
         @prefix ex: <http://example.org#>.
         ex:Person("Ann").
     """, [
-        (BNode("person"), RDF.type, FOAF.Person),
-        (BNode("person"), FOAF.firstName, Literal("Ann"))
+        (BNode("person_0_1"), RDF.type, FOAF.Person),
+        (BNode("person_0_1"), FOAF.firstName, Literal("Ann"))
     ])
 ]
 

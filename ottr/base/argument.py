@@ -2,7 +2,7 @@
 # Author: Thomas MINIER - MIT License 2019
 from abc import ABC, abstractmethod
 from ottr.base.utils import OTTR
-from rdflib import URIRef
+from rdflib import URIRef, BNode
 
 class InstanceArgument(ABC):
     """An instance argument, which corresponds to the parameter of a template."""
@@ -32,7 +32,7 @@ class InstanceArgument(ABC):
         return False
 
     @abstractmethod
-    def evaluate(self, bindings=dict(), as_nt=False):
+    def evaluate(self, bindings=dict(), bnode_suffix=0, as_nt=False):
         """Evaluate the argument using an optional set of bindings"""
         pass
 
@@ -47,8 +47,11 @@ class ConcreteArgument(InstanceArgument):
     def is_bound(self):
         return True
 
-    def evaluate(self, bindings=dict(), as_nt=False):
-        return self._value.n3() if as_nt else self._value
+    def evaluate(self, bindings=dict(), bnode_suffix=(0,0), as_nt=False):
+        term = self._value
+        if type(term) == BNode and bnode_suffix is not None:
+            term = BNode("{}_{}_{}".format(str(term), bnode_suffix[0], bnode_suffix[1]))
+        return term.n3() if as_nt else term
 
 class URIArgument(ConcreteArgument):
     """A ConcreteArgument that evaluates to an URI"""
@@ -63,7 +66,10 @@ class VariableArgument(InstanceArgument):
     def __init__(self, value, position):
         super(VariableArgument, self).__init__(value, position)
 
-    def evaluate(self, bindings=dict(), as_nt=False):
+    def evaluate(self, bindings=dict(), bnode_suffix=(0, 0), as_nt=False):
         if self._value in bindings:
-            return bindings[self._value].n3() if as_nt else bindings[self._value]
+            term = bindings[self._value]
+            if type(term) == BNode and bnode_suffix is not None:
+                term = BNode("{}_{}_{}".format(str(term), bnode_suffix[0], bnode_suffix[1]))
+            return term.n3() if as_nt else term
         return OTTR.none

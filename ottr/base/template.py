@@ -100,10 +100,10 @@ class MainTemplate(AbstractTemplate):
     def __repr__(self):
         return self.__str__()
 
-    def expand(self, arguments, all_templates, as_nt=False):
+    def expand(self, arguments, all_templates, bnode_suffix=(0, 0),  as_nt=False):
         """Returns a generator that expands the template"""
         for instance in self._instances:
-            yield from instance.expand(arguments, all_templates, as_nt=as_nt)
+            yield from instance.expand(arguments, all_templates, bnode_suffix=bnode_suffix, as_nt=as_nt)
 
 class NonBaseInstance(AbstractTemplate):
     """
@@ -120,7 +120,9 @@ class NonBaseInstance(AbstractTemplate):
         """Returns True if the template is a base template, False otherwise"""
         return False
 
-    def expand(self, arguments, all_templates, as_nt=False):
+    def expand(self, arguments, all_templates, bnode_suffix=(0, 0), as_nt=False):
+        # increment the bnode unique prefixes, used to unify blank node acrros instance expansions
+        bnode_suffix = (bnode_suffix[0], bnode_suffix[1] + 1)
         if self._name in all_templates:
             # fetch template
             template = all_templates[self._name]
@@ -137,6 +139,6 @@ class NonBaseInstance(AbstractTemplate):
             new_arguments.update(arguments)
             new_arguments.update(template.format_arguments(args))
             # recursively expand the template instance
-            yield from template.expand(new_arguments, all_templates, as_nt=as_nt)
+            yield from template.expand(new_arguments, all_templates, bnode_suffix=bnode_suffix, as_nt=as_nt)
         else:
             raise Exception("Cannot expand the unkown OTTR template '{}'".format(self._name.n3()))
