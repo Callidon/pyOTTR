@@ -1,19 +1,12 @@
 # stootr_test.py
 # Author: Thomas MINIER - MIT License 2019
+import pytest
 from ottr import OttrGenerator
 from rdflib import BNode, Literal, URIRef
 from rdflib.namespace import FOAF, RDF
 
-
-def test_simple_generation():
-    expected = [
-        (BNode("person"), RDF.type, FOAF.Person),
-        (BNode("person"), FOAF.firstName, Literal("Ann")),
-        (BNode("person"), FOAF.lastName, Literal("Strong")),
-        (BNode("person"), FOAF.mbox, URIRef("mailto:ann.strong@gmail.com"))
-    ]
-    gen = OttrGenerator()
-    gen.load_templates("""
+fixtures = [
+    ("""
         @prefix ex: <http://example.org#>.
         ex:Person[ ?firstName, ?lastName, ?email ] :: {
           o-rdf:Type (_:person, foaf:Person ),
@@ -21,24 +14,16 @@ def test_simple_generation():
           ottr:Triple (_:person, foaf:lastName, ?lastName ),
           ottr:Triple (_:person, foaf:mbox, ?email )
         } .
-    """)
-    instances = gen.instanciate("""
+    """, """
         @prefix ex: <http://example.org#>.
         ex:Person("Ann", "Strong", <mailto:ann.strong@gmail.com>).
-    """)
-    for triple in instances.execute(as_nt=False):
-        assert triple in expected
-        # remove triple from the list of expected values
-        expected.remove(triple)
-    assert len(expected) == 0
-
-def test_recursive_template():
-    expected = [
+    """, [
         (BNode("person"), RDF.type, FOAF.Person),
-        (BNode("person"), FOAF.firstName, Literal("Ann"))
-    ]
-    gen = OttrGenerator()
-    gen.load_templates("""
+        (BNode("person"), FOAF.firstName, Literal("Ann")),
+        (BNode("person"), FOAF.lastName, Literal("Strong")),
+        (BNode("person"), FOAF.mbox, URIRef("mailto:ann.strong@gmail.com"))
+    ]),
+    ("""
         @prefix ex: <http://example.org#>.
         ex:FirstName [?uri, ?firstName] :: {
             ottr:Triple (?uri, foaf:firstName, ?firstName )
@@ -47,11 +32,20 @@ def test_recursive_template():
           o-rdf:Type (_:person, foaf:Person ),
           ex:FirstName (_:person, ?firstName)
         } .
-    """)
-    instances = gen.instanciate("""
+    """, """
         @prefix ex: <http://example.org#>.
         ex:Person("Ann").
-    """)
+    """, [
+        (BNode("person"), RDF.type, FOAF.Person),
+        (BNode("person"), FOAF.firstName, Literal("Ann"))
+    ])
+]
+
+@pytest.mark.parametrize("template,instance,expected", fixtures)
+def test_triple_generation(template, instance, expected):
+    gen = OttrGenerator()
+    gen.load_templates(template)
+    instances = gen.instanciate(instance)
     for triple in instances.execute(as_nt=False):
         assert triple in expected
         # remove triple from the list of expected values
