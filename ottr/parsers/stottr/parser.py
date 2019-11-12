@@ -1,10 +1,10 @@
 # parser.py
 # Author: Thomas MINIER - MIT License 2019
 from ottr.parsers.stottr.lexer import lex_templates_stottr, lex_instances_stottr
-from ottr.base.base_templates import OttrTriple, OttrType
+from ottr.base.base_templates import OttrTriple
 from ottr.base.template import MainTemplate, NonBaseInstance
 from ottr.base.argument import ConcreteArgument, VariableArgument
-from ottr.base.utils import OTTR_LABEL_URI, OTTR_TRIPLE_URI, OTTR_TYPE_URI
+from ottr.base.utils import OTTR_TRIPLE_URI
 from rdflib import Graph, Variable
 from rdflib.namespace import RDFS
 from rdflib.namespace import NamespaceManager
@@ -13,8 +13,7 @@ from rdflib.util import from_n3
 # All base templates are registered here,
 # as tuples (template constructor, expected nb of arguments)
 BASE_TEMPLATES = {
-    OTTR_TRIPLE_URI: (OttrTriple, 3),
-    OTTR_TYPE_URI: (OttrType, 2)
+    OTTR_TRIPLE_URI: (OttrTriple, 3)
 }
 
 def get_default_nsm():

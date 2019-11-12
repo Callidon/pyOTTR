@@ -1,7 +1,7 @@
 # template.py
 # Author: Thomas MINIER - MIT License 2019
 from abc import ABC, abstractmethod
-from rdflib import BNode, Literal, URIRef
+from rdflib import BNode, Literal, URIRef, Variable
 from rdflib.namespace import RDFS
 from ottr.base.utils import OTTR_IRI, OTTR_NONE
 
@@ -36,7 +36,7 @@ class TemplateParameter(object):
         # assert that the argument's type is correct
         if self._param_type != RDFS.Resource:
             # validate uris
-            if self._param_type == OTTR_IRI and type(value) != URIRef:
+            if self._param_type == OTTR_IRI and (type(value) == Literal or type(value) == Variable):
                 return False, "expected an IRI but instead got a {}".format(type(value))
             elif type(value) == Literal and value.datatype != self._param_type:
                 return False, "expected a Literal with datatype {} but instead got {}".format(self._param_type.n3(), value.datatype)
@@ -94,6 +94,12 @@ class MainTemplate(AbstractTemplate):
         super(MainTemplate, self).__init__(name)
         self._instances = instances
 
+    def __str__(self):
+        return self.name + ":: {\n" + " .\n".join(self._instances) + "} ."
+
+    def __repr__(self):
+        return self.__str__()
+
     def expand(self, arguments, all_templates, as_nt=False):
         """Returns a generator that expands the template"""
         for instance in self._instances:
@@ -106,7 +112,9 @@ class NonBaseInstance(AbstractTemplate):
 
     def __init__(self, name, instance_arguments):
         super(NonBaseInstance, self).__init__(name)
-        self._instance_arguments = [(x.position, x.value) for x in instance_arguments if x.is_bound]
+        # store bound & unbound instance arguments separately
+        self._bound_arguments = [(x.position, x.value) for x in instance_arguments if x.is_bound]
+        self._unbound_arguments = [(x.position, x.value) for x in instance_arguments if not x.is_bound]
 
     def is_base(self):
         """Returns True if the template is a base template, False otherwise"""
@@ -114,11 +122,20 @@ class NonBaseInstance(AbstractTemplate):
 
     def expand(self, arguments, all_templates, as_nt=False):
         if self._name in all_templates:
+            # fetch template
             template = all_templates[self._name]
-            # merge new arguments with previous ones
+            # try to link unbound instance arguments using the given arguments
+            args = list(self._bound_arguments)
+            for position, value in self._unbound_arguments:
+                if value in arguments:
+                    args.append((position, arguments[value]))
+                else:
+                    # TODO raise something ??
+                    pass
+            # prepare new arguments for recursive template expansion
             new_arguments = dict()
             new_arguments.update(arguments)
-            new_arguments.update(template.format_arguments(self._instance_arguments))
+            new_arguments.update(template.format_arguments(args))
             # recursively expand the template instance
             yield from template.expand(new_arguments, all_templates, as_nt=as_nt)
         else:

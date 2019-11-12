@@ -12,6 +12,12 @@ class InstanceArgument(ABC):
         self._value = value
         self._position = position
 
+    def __str__(self):
+        return "({}, pos={})".format(self._value, self._position)
+
+    def __repr__(self):
+        return self.__str__()
+
     @property
     def value(self):
         return self._value

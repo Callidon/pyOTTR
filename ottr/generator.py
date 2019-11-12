@@ -1,7 +1,7 @@
 # generator.py
 # Author: Thomas MINIER - MIT License 2019
 from ottr.parsers import parse_templates, parse_instances
-from ottr.tpl import RDFS_TEMPLATES
+from ottr.tpl import RDF_TEMPLATES, RDFS_TEMPLATES
 from rdflib import URIRef, Variable, Literal
 
 class OttrGenerator(object):
@@ -13,6 +13,7 @@ class OttrGenerator(object):
         super(OttrGenerator, self).__init__()
         self._templates = dict()
         if load_defaults:
+            self.load_templates(RDF_TEMPLATES, format="stottr")
             self.load_templates(RDFS_TEMPLATES, format="stottr")
 
     def load_templates(self, text, format="stottr"):
