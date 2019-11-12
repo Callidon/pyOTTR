@@ -2,8 +2,10 @@
 # Author: Thomas MINIER - MIT License 2019
 import pytest
 from ottr import OttrGenerator
+from rdflib import BNode, Literal, URIRef
+from rdflib.namespace import RDF, FOAF
 
-fixtures = [
+failing_tests = [
     # type related errors
     ("""
         @prefix ex: <http://example.org#>.
@@ -45,12 +47,51 @@ fixtures = [
     """, """Invalid argument _:person used for parameter "! <http://www.w3.org/2000/01/rdf-schema#Resource> ?uri". Reason : this parameter is non blank, so it cannot be bound to a blank node."""),
 ]
 
+correct_tests = [
+    ("""
+        @prefix ex: <http://example.org#>.
+        ex:Person[ ottr:IRI ?uri ] :: {
+          o-rdf:Type (?uri, foaf:Person )
+        } .
+    """, """
+        @prefix ex: <http://example.org#>.
+        ex:Person (ex:Ann).
+    """, [ (URIRef("http://example.org#Ann"), RDF.type, FOAF.Person) ]),
+    ("""
+        @prefix ex: <http://example.org#>.
+        ex:Person[ ottr:IRI ?uri, xsd:integer ?age ] :: {
+          ottr:Triple (?uri, foaf:age, ?age )
+        } .
+    """, """
+        @prefix ex: <http://example.org#>.
+        ex:Person(ex:Ann, "12"^^xsd:integer).
+    """, [ (URIRef("http://example.org#Ann"), FOAF.age, Literal(12)) ]),
+    ("""
+        @prefix ex: <http://example.org#>.
+        ex:Person[ ! ?uri ] :: {
+          o-rdf:Type (?uri, foaf:Person )
+        } .
+    """, """
+        @prefix ex: <http://example.org#>.
+        ex:Person(ex:Ann).
+    """, [ (URIRef("http://example.org#Ann"), RDF.type, FOAF.Person) ])
+]
 
-@pytest.mark.parametrize("template,instance,expected_err", fixtures)
-def test_valid_parameter(template, instance, expected_err):
+@pytest.mark.parametrize("template,instance,expected_err", failing_tests)
+def test_invalid_parameter(template, instance, expected_err):
     gen = OttrGenerator()
     gen.load_templates(template)
     try:
         instances = gen.instanciate(instance)
     except Exception as e:
         assert str(e).strip() == expected_err
+
+@pytest.mark.parametrize("template,instance,expected", correct_tests)
+def test_valid_parameter(template, instance, expected):
+    gen = OttrGenerator()
+    gen.load_templates(template)
+    instances = gen.instanciate(instance)
+    for triple in instances.execute(as_nt=False):
+        assert triple in expected
+        expected.remove(triple)
+    assert len(expected) == 0
