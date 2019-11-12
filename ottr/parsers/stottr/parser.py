@@ -9,12 +9,20 @@ from rdflib import Graph, Variable
 from rdflib.namespace import RDFS
 from rdflib.namespace import NamespaceManager
 from rdflib.util import from_n3
+from hashlib import md5
 
 # All base templates are registered here,
 # as tuples (template constructor, expected nb of arguments)
 BASE_TEMPLATES = {
     OTTR_TRIPLE_URI: (OttrTriple, 3)
 }
+
+def unify(suffix, value):
+    """Makes sometinh unique using a suffix"""
+    m = md5()
+    m.update(suffix.encode('utf-8'))
+    hashed = m.hexdigest()
+    return "{}_{}".format(value, hashed)
 
 def get_default_nsm():
     """Get an rdflib NamespaceManager wirh default prefixes configured"""
@@ -40,28 +48,34 @@ def parse_term(term, nsm=None):
         return Variable(term[1:])
     return from_n3(term, nsm=nsm)
 
-def parse_instance_arguments(arguments, nsm=None):
+def parse_instance_arguments(template_name, arguments, nsm=None):
     """Parse the arguments of a template instance"""
     args = list()
     for ind in range(len(arguments)):
         argument = arguments[ind]
         value = parse_term(argument, nsm=nsm)
+        # rewrite variables to make them unique for this scope
         if type(value) is Variable:
+            value = Variable(unify(template_name.n3(), str(value)))
             args.append(VariableArgument(value, ind))
         else:
             args.append(ConcreteArgument(value, ind))
     return args
 
-def parse_template_parameter(param, nsm=None):
+def parse_template_parameter(template_name, param, nsm=None):
     """Parse an OTTR template parameter"""
     template_param = dict()
     template_param['name'] = parse_term(param.value, nsm=nsm)
+    # rewrite variables to make them unique for this scope
+    if type(template_param['name']) == Variable:
+        v = template_param['name']
+        template_param['name'] = Variable(unify(template_name.n3(), str(v)))
     template_param['type'] = parse_term(param.type, nsm=nsm) if len(param.type) > 0 else RDFS.Resource
     template_param['optional'] = True if len(param.optional) > 0 else False
     template_param['nonblank'] = True if len(param.nonblank) > 0 else False
     return template_param
 
-def parse_template_instance(instance, nsm=None):
+def parse_template_instance(parent_template, instance, nsm=None):
     """Parse a stOTTR template instance"""
     template_name = parse_term(instance.name, nsm=nsm)
 
@@ -70,11 +84,11 @@ def parse_template_instance(instance, nsm=None):
         TemplateConstructor, nb_arguments = BASE_TEMPLATES[template_name]
         if len(instance.arguments) != nb_arguments:
             raise Exception("The {} template takes exactly {} arguments, but {} were provided".format(template_name.n3(), nb_arguments, len(instance.arguments)))
-        params = parse_instance_arguments(instance.arguments, nsm=nsm)
+        params = parse_instance_arguments(parent_template, instance.arguments, nsm=nsm)
         return TemplateConstructor(*params)
 
     # case 2: a non-base template instance
-    return NonBaseInstance(template_name, parse_instance_arguments(instance.arguments, nsm=nsm))
+    return NonBaseInstance(template_name, parse_instance_arguments(parent_template, instance.arguments, nsm=nsm))
 
 def parse_templates_stottr(text):
     """Parse a set of stOTTR template definitions and returns the list of all OTTR templates."""
@@ -97,13 +111,13 @@ def parse_templates_stottr(text):
         template_name = parse_term(template.name, nsm=nsm)
 
         # parse instances
-        template_instances = [parse_template_instance(v, nsm=nsm) for v in template.instances]
+        template_instances = [parse_template_instance(template_name, v, nsm=nsm) for v in template.instances]
 
         # create the OTTR template &
         ottr_template = MainTemplate(template_name, template_instances)
         # parse and register the template's parameters
         for position in range(len(template.parameters.asList())):
-            parameter = parse_template_parameter(template.parameters[position], nsm=nsm)
+            parameter = parse_template_parameter(template_name, template.parameters[position], nsm=nsm)
             ottr_template.add_parameter(parameter['name'], position, param_type=parameter['type'], optional=parameter['optional'], nonblank=parameter['nonblank'])
         # register the new OTTR template
         ottr_templates.append(ottr_template)

@@ -95,7 +95,10 @@ class MainTemplate(AbstractTemplate):
         self._instances = instances
 
     def __str__(self):
-        return self.name + ":: {\n" + " .\n".join(self._instances) + "} ."
+        res = self.name + ":: {\n"
+        for instance in self._instances:
+            res += str(instance)
+        return res + "} ."
 
     def __repr__(self):
         return self.__str__()

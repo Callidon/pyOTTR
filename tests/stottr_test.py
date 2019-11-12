@@ -9,10 +9,10 @@ fixtures = [
     ("""
         @prefix ex: <http://example.org#>.
         ex:Person[ ?firstName, ?lastName, ?email ] :: {
-          o-rdf:Type (_:person, foaf:Person ),
-          ottr:Triple (_:person, foaf:firstName, ?firstName ),
-          ottr:Triple (_:person, foaf:lastName, ?lastName ),
-          ottr:Triple (_:person, foaf:mbox, ?email )
+            o-rdf:Type (_:person, foaf:Person ),
+            ottr:Triple (_:person, foaf:firstName, ?firstName ),
+            ottr:Triple (_:person, foaf:lastName, ?lastName ),
+            ottr:Triple (_:person, foaf:mbox, ?email )
         } .
     """, """
         @prefix ex: <http://example.org#>.
