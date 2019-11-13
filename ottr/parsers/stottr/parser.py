@@ -18,7 +18,13 @@ BASE_TEMPLATES = {
 }
 
 def unify(suffix, value):
-    """Makes sometinh unique using a suffix"""
+    """
+        Makes a string unique by adding a hashed suffix to it.
+
+        Arguments:
+            - suffix ``str``: suffix to hash & append at the end of the value
+            - value ``str``= value to makes unique
+    """
     m = md5()
     m.update(suffix.encode('utf-8'))
     hashed = m.hexdigest()
@@ -42,14 +48,30 @@ def get_default_nsm():
     return nsm
 
 def parse_term(term, nsm=None):
-    """Parse a RDF Term from text format to rdflib format"""
+    """
+        Parse a RDF Term from text format to rdflib format.
+
+        Arguments:
+            - term ``str``: RDF Term to parse (in text format)
+            - nsm :class `rdflib.namespace.NamespaceManager`: (optional) RDFlib namespace manager used to manage prefixes.
+    """
     # rdflib tends to see SPARQL variables as blank nodes, so we need to handle them separately
     if term.startswith('?'):
         return Variable(term[1:])
     return from_n3(term, nsm=nsm)
 
 def parse_instance_arguments(template_name, arguments, nsm=None):
-    """Parse the arguments of a template instance"""
+    """
+        Parse the arguments of a template instance.
+
+        Arguments:
+            - template_name :class`rdflib.term.Identifier`: URI of the template
+            - arguments ``str[]``: instance arguments to parse
+            - nsm :class `rdflib.namespace.NamespaceManager`: (optional) RDFlib namespace manager used to manage prefixes.
+
+        Retuns:
+         A list of :class`ottr.base.InstanceArgument`
+    """
     args = list()
     for ind in range(len(arguments)):
         argument = arguments[ind]
@@ -63,7 +85,17 @@ def parse_instance_arguments(template_name, arguments, nsm=None):
     return args
 
 def parse_template_parameter(template_name, param, nsm=None):
-    """Parse an OTTR template parameter"""
+    """
+        Parse an OTTR template parameter.
+
+        Arguments:
+            - template_name :class`rdflib.term.Identifier`: URI of the template
+            - param ``str[]``: parameter to parse
+            - nsm :class`rdflib.namespace.NamespaceManager`: (optional) RDFlib namespace manager used to manage prefixes.
+
+        Returns:
+         A `dict` representation of the parsed template parameter, with fields "name" (:class`rdflib.term.Identifier`), "type" (:class`rdflib.term.URIRef`), "optional" (``bool``) and "nonblank" (``bool``).
+    """
     template_param = dict()
     template_param['name'] = parse_term(param.value, nsm=nsm)
     # rewrite variables to make them unique for this scope
@@ -76,7 +108,17 @@ def parse_template_parameter(template_name, param, nsm=None):
     return template_param
 
 def parse_template_instance(parent_template, instance, nsm=None):
-    """Parse a stOTTR template instance"""
+    """
+        Parse a stOTTR template instance.
+
+        Arguments:
+            - parent_template :class`rdflib.term.Identifier`: URI of the template that owns the scope of the instance.
+            - instance ``str[]``: instance to parse
+            - nsm :class`rdflib.namespace.NamespaceManager`: (optional) RDFlib namespace manager used to manage prefixes.
+
+        Returns:
+         A :class`ottr.base.AbstractTemplate`
+    """
     template_name = parse_term(instance.name, nsm=nsm)
 
     # case 1: handle base templates (using a generic method)
@@ -91,7 +133,15 @@ def parse_template_instance(parent_template, instance, nsm=None):
     return NonBaseInstance(template_name, parse_instance_arguments(parent_template, instance.arguments, nsm=nsm))
 
 def parse_templates_stottr(text):
-    """Parse a set of stOTTR template definitions and returns the list of all OTTR templates."""
+    """
+        Parse a set of stOTTR template definitions and returns the list of all OTTR templates.
+
+        Arguments:
+            - text ``str``: stOTTR template definitions in text format.
+
+        Returns:
+            A list of :class`ottr.base.MainTemplate` built from the valid sOTTR template definitions provided as input.
+    """
     # create a RDFLib NamespaceManager to handle automatic prefix expansion
     nsm = get_default_nsm()
 
@@ -125,7 +175,15 @@ def parse_templates_stottr(text):
 
 
 def parse_instances_stottr(text):
-    """Parse a set of stOTTR instances and returns them as objects."""
+    """
+        Parse a set of stOTTR instances and returns them as objects.
+
+        Arguments:
+            - text ``str``: stOTTR instances in text format.
+
+        Returns:
+            A list of instances built from the valid sOTTR instances provided as input.
+    """
     # create a RDFLib NamespaceManager to handle automatic prefix expansion
     nsm = get_default_nsm()
 

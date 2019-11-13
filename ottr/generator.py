@@ -19,11 +19,27 @@ class OttrGenerator(object):
             self.load_templates(RDFS_TEMPLATES, format="stottr")
 
     def load_templates(self, text, format="stottr"):
-        """Load a set of pOTTR template definitions"""
+        """
+            Load a set of OTTR template definitions.
+
+            Arguments:
+                - text ``str``: OTTR template definitions in text format.
+                - format ``str``: (optional) format of the template definitions. Defaults to sOTTR. Supported formats: sOTTR.
+
+        """
         for template in parse_templates(text, format=format):
             self._templates[template.name] = template
 
     def instanciate(self, text, format="stottr"):
+        """
+            Instance a set of OTTR instances.
+            Arguments:
+                - text ``str``: OTTR instances in text format.
+                - format ``str``: (optional) format of the template definitions. Defaults to sOTTR. Supported formats: sOTTR.
+
+            Returns:
+                A :class`ottr.generator.OttrInstances`
+        """
         # increment the instance ID generator
         self._instance_id += 1
         # parse instances
@@ -50,5 +66,14 @@ class OttrInstances(object):
         self._all_templates = all_templates
 
     def execute(self, as_nt=False):
+        """
+            Execute the instances to produce RDF triples.
+
+            Arguments:
+                - as_nt ``bool``: (optional) True if the results should be produced in text RDF format, False if they should be produced in RDFlib format.
+
+            Returns:
+                A generator that yields 3-tuples of ``str`` or :class`rdflib.term.Identifier` (depends on the value set for as_nt).
+        """
         for template, params in self._to_execute:
             yield from template.expand(params, self._all_templates, bnode_suffix=(self._id, 0), as_nt=as_nt)
