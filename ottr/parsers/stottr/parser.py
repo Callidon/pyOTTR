@@ -9,7 +9,6 @@ from rdflib import Graph, Variable
 from rdflib.namespace import RDFS
 from rdflib.namespace import NamespaceManager
 from rdflib.util import from_n3
-from hashlib import md5
 
 # All base templates are registered here,
 # as tuples (template constructor, expected nb of arguments)
@@ -17,18 +16,17 @@ BASE_TEMPLATES = {
     OTTR_TRIPLE_URI: (OttrTriple, 3)
 }
 
-def unify(suffix, value):
+def unify_var(variable, suffix):
     """
-        Makes a string unique by adding a hashed suffix to it.
+        Makes a :class`rdflib.term.Variable` unique by appending a suffix to it.
 
         Arguments:
-            - suffix ``str``: suffix to hash & append at the end of the value
-            - value ``str``= value to makes unique
+            - value :class`rdflib.term.Variable`: Variable to makes unique
+            - suffix ``number|str``: suffix to hash & append at the end of the value
+        Returns:
+            A :class`rdflib.term.Variable`
     """
-    m = md5()
-    m.update(suffix.encode('utf-8'))
-    hashed = m.hexdigest()
-    return "{}_{}".format(value, hashed)
+    return Variable("{}_{}".format(str(variable), suffix))
 
 def get_default_nsm():
     """Get an rdflib NamespaceManager wirh default prefixes configured"""
@@ -60,12 +58,12 @@ def parse_term(term, nsm=None):
         return Variable(term[1:])
     return from_n3(term, nsm=nsm)
 
-def parse_instance_arguments(template_name, arguments, nsm=None):
+def parse_instance_arguments(template_id, arguments, nsm=None):
     """
         Parse the arguments of a template instance.
 
         Arguments:
-            - template_name :class`rdflib.term.Identifier`: URI of the template
+            - template_id ``int``: ID of the template
             - arguments ``str[]``: instance arguments to parse
             - nsm :class `rdflib.namespace.NamespaceManager`: (optional) RDFlib namespace manager used to manage prefixes.
 
@@ -78,18 +76,18 @@ def parse_instance_arguments(template_name, arguments, nsm=None):
         value = parse_term(argument, nsm=nsm)
         # rewrite variables to make them unique for this scope
         if type(value) is Variable:
-            value = Variable(unify(template_name.n3(), str(value)))
+            value = unify_var(value, template_id)
             args.append(VariableArgument(value, ind))
         else:
             args.append(ConcreteArgument(value, ind))
     return args
 
-def parse_template_parameter(template_name, param, nsm=None):
+def parse_template_parameter(template_id, param, nsm=None):
     """
         Parse an OTTR template parameter.
 
         Arguments:
-            - template_name :class`rdflib.term.Identifier`: URI of the template
+            - template_id ``int``: ID of the template
             - param ``str[]``: parameter to parse
             - nsm :class`rdflib.namespace.NamespaceManager`: (optional) RDFlib namespace manager used to manage prefixes.
 
@@ -100,19 +98,18 @@ def parse_template_parameter(template_name, param, nsm=None):
     template_param['name'] = parse_term(param.value, nsm=nsm)
     # rewrite variables to make them unique for this scope
     if type(template_param['name']) == Variable:
-        v = template_param['name']
-        template_param['name'] = Variable(unify(template_name.n3(), str(v)))
+        template_param['name'] = unify_var(template_param['name'], template_id)
     template_param['type'] = parse_term(param.type, nsm=nsm) if len(param.type) > 0 else RDFS.Resource
     template_param['optional'] = True if len(param.optional) > 0 else False
     template_param['nonblank'] = True if len(param.nonblank) > 0 else False
     return template_param
 
-def parse_template_instance(parent_template, instance, nsm=None):
+def parse_template_instance(parent_template_id, instance, nsm=None):
     """
         Parse a stOTTR template instance.
 
         Arguments:
-            - parent_template :class`rdflib.term.Identifier`: URI of the template that owns the scope of the instance.
+            - parent_template_id ``int``: ID of the template that owns the scope of the instance.
             - instance ``str[]``: instance to parse
             - nsm :class`rdflib.namespace.NamespaceManager`: (optional) RDFlib namespace manager used to manage prefixes.
 
@@ -126,11 +123,11 @@ def parse_template_instance(parent_template, instance, nsm=None):
         TemplateConstructor, nb_arguments = BASE_TEMPLATES[template_name]
         if len(instance.arguments) != nb_arguments:
             raise Exception("The {} template takes exactly {} arguments, but {} were provided".format(template_name.n3(), nb_arguments, len(instance.arguments)))
-        params = parse_instance_arguments(parent_template, instance.arguments, nsm=nsm)
+        params = parse_instance_arguments(parent_template_id, instance.arguments, nsm=nsm)
         return TemplateConstructor(*params)
 
     # case 2: a non-base template instance
-    return NonBaseInstance(template_name, parse_instance_arguments(parent_template, instance.arguments, nsm=nsm))
+    return NonBaseInstance(template_name, parse_instance_arguments(parent_template_id, instance.arguments, nsm=nsm))
 
 def parse_templates_stottr(text):
     """
@@ -157,20 +154,23 @@ def parse_templates_stottr(text):
 
     # parse each template definition found
     ottr_templates = list()
+    # unique ID sued to make all variables unique to their scope
+    template_id = 0
     for template in tree.templates:
         template_name = parse_term(template.name, nsm=nsm)
 
         # parse instances
-        template_instances = [parse_template_instance(template_name, v, nsm=nsm) for v in template.instances]
+        template_instances = [parse_template_instance(template_id, v, nsm=nsm) for v in template.instances]
 
         # create the OTTR template &
         ottr_template = MainTemplate(template_name, template_instances)
         # parse and register the template's parameters
         for position in range(len(template.parameters.asList())):
-            parameter = parse_template_parameter(template_name, template.parameters[position], nsm=nsm)
+            parameter = parse_template_parameter(template_id, template.parameters[position], nsm=nsm)
             ottr_template.add_parameter(parameter['name'], position, param_type=parameter['type'], optional=parameter['optional'], nonblank=parameter['nonblank'])
         # register the new OTTR template
         ottr_templates.append(ottr_template)
+        template_id += 1
     return ottr_templates
 
 
