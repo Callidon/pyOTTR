@@ -4,7 +4,7 @@ from ottr.parsers.stottr.lexer import lex_templates_stottr, lex_instances_stottr
 from ottr.base.base_templates import OttrTriple
 from ottr.base.template import MainTemplate, NonBaseInstance
 from ottr.base.argument import ConcreteArgument, VariableArgument
-from ottr.base.utils import OTTR_TRIPLE_URI
+from ottr.base.utils import OTTR_TRIPLE_URI, OTTR_NONE
 from rdflib import Graph, Variable
 from rdflib.namespace import RDFS
 from rdflib.namespace import NamespaceManager
@@ -53,6 +53,9 @@ def parse_term(term, nsm=None):
             - term ``str``: RDF Term to parse (in text format)
             - nsm :class `rdflib.namespace.NamespaceManager`: (optional) RDFlib namespace manager used to manage prefixes.
     """
+    # the special keyword "none" is interpreted as "ottr:None"
+    if term == "none":
+        return OTTR_NONE
     # rdflib tends to see SPARQL variables as blank nodes, so we need to handle them separately
     if term.startswith('?'):
         return Variable(term[1:])
@@ -102,6 +105,7 @@ def parse_template_parameter(template_id, param, nsm=None):
     template_param['type'] = parse_term(param.type, nsm=nsm) if len(param.type) > 0 else RDFS.Resource
     template_param['optional'] = True if len(param.optional) > 0 else False
     template_param['nonblank'] = True if len(param.nonblank) > 0 else False
+    template_param['default'] = parse_term(param.default, nsm=nsm) if len(param.default) > 0 else None
     return template_param
 
 def parse_template_instance(parent_template_id, instance, nsm=None):
@@ -167,7 +171,7 @@ def parse_templates_stottr(text):
         # parse and register the template's parameters
         for position in range(len(template.parameters.asList())):
             parameter = parse_template_parameter(template_id, template.parameters[position], nsm=nsm)
-            ottr_template.add_parameter(parameter['name'], position, param_type=parameter['type'], optional=parameter['optional'], nonblank=parameter['nonblank'])
+            ottr_template.add_parameter(parameter['name'], position, param_type=parameter['type'], optional=parameter['optional'], nonblank=parameter['nonblank'], default=parameter['default'])
         # register the new OTTR template
         ottr_templates.append(ottr_template)
         template_id += 1

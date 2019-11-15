@@ -22,6 +22,12 @@ r_prefix = re.compile(r'([A-Za-z0-9]|-)+')
 # a suppressed comma (',')
 comma = Literal(',').suppress()
 
+# A Turtle Prefix
+prefixName = Regex(r_prefix)
+
+# The special 'none' keyword (a shorthand notation for ottr:None)
+ottrNone = Keyword('none')
+
 # a RDF IRI
 iri = Regex(r_uriref)
 
@@ -38,23 +44,21 @@ literal = Regex(r_literal)
 iriOrVariable = MatchFirst([iri, variable])
 
 # Any valid RDF terms
-rdfTerm = MatchFirst([iri, literal, bnode, variable])
+rdfTerm = MatchFirst([ottrNone, iri, literal, bnode, variable])
 
 # Any valid RDF terms, excluding SPARQL variables
-rdfTermNoVars = MatchFirst([iri, literal, bnode, variable])
-
-# A Turtle Prefix
-prefixName = Regex(r_prefix)
+rdfTermNoVars = MatchFirst([ottrNone, iri, literal, bnode])
 
 # ----- stOTTR language rules ------
 
 # A template parameter definition, with optional type and nonblank
-# For example: ?iri or xsd:string ?literal or ! otrr:IRI ?iri
+# Examples: "?iri", "xsd:string ?literal", "! otrr:IRI ?iri" or "?iri = ex:Ann"
 param = Group(
             Optional(Keyword('!')).setResultsName('nonblank') +
             Optional(Keyword('?')).setResultsName('optional') +
             Optional(iri).setResultsName('type') +
-            variable.setResultsName('value')
+            variable.setResultsName('value') +
+            Optional(Keyword('=') + rdfTermNoVars.setResultsName('default'))
         ).setResultsName('parameter') + Optional(',').suppress()
 
 # A list of template parameters

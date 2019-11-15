@@ -33,7 +33,7 @@ failing_tests = [
         } .
     """, """
         @prefix ex: <http://example.org#>.
-        ex:Person(ottr:None).
+        ex:Person(none).
     """),
     # non blank errors
     ("""
@@ -74,6 +74,15 @@ correct_tests = [
     """, """
         @prefix ex: <http://example.org#>.
         ex:Person(ex:Ann).
+    """, [ (URIRef("http://example.org#Ann"), RDF.type, FOAF.Person) ]),
+    ("""
+        @prefix ex: <http://example.org#>.
+        ex:Person[ ?uri = ex:Ann ] :: {
+          o-rdf:Type (?uri, foaf:Person )
+        } .
+    """, """
+        @prefix ex: <http://example.org#>.
+        ex:Person(none).
     """, [ (URIRef("http://example.org#Ann"), RDF.type, FOAF.Person) ])
 ]
 
