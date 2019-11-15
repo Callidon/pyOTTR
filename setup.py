@@ -2,7 +2,7 @@
 # Author: Thomas MINIER - MIT License 2019
 from setuptools import setup, find_packages
 
-__version__ = "1.0.0"
+__version__ = "0.0.1"
 
 with open('README.rst') as file:
     long_description = file.read()
