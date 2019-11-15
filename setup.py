@@ -4,11 +4,6 @@ from setuptools import setup, find_packages
 
 __version__ = "1.0.0"
 
-
-# console_scripts = [
-#     'sage = sage.cli.start_server:start_sage_server'
-# ]
-
 with open('README.rst') as file:
     long_description = file.read()
 
@@ -28,8 +23,5 @@ setup(
     install_requires=install_requires,
     include_package_data=True,
     zip_safe=False,
-    packages=find_packages(exclude=["tests", "tests.*"]),
-    # entry_points={
-    #     'console_scripts': console_scripts
-    # }
+    packages=find_packages(exclude=["tests", "tests.*"])
 )
