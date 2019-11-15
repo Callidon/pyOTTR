@@ -1,4 +1,6 @@
 # pyOTTR
+[![Build Status](https://travis-ci.org/Callidon/pyOTTR.svg?branch=master)](https://travis-ci.org/Callidon/pyOTTR)
+
 Manipulate [OTTR Reasonable Ontology Templates](http://ottr.xyz/) in Python.
 
 [Package documentation](https://callidon.github.io/pyOTTR)
