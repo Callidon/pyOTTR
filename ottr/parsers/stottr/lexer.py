@@ -3,6 +3,15 @@
 import re
 from pyparsing import CaselessKeyword, Keyword, LineEnd, Literal, MatchFirst, OneOrMore, Optional, Group, Regex, Word, ZeroOrMore
 
+
+def ListOf(content, start_char="(", end_char=")", separator=","):
+    """Build a group that matches a list of the same tokens"""
+    list_content = MatchFirst([
+        content,
+        content + Optional(Literal(separator)).suppress()
+    ])
+    return Group(Literal(start_char).suppress() + OneOrMore(content + Optional(Literal(separator)).suppress()) + Literal(end_char).suppress())
+
 # ----- General terms ------
 
 uriref = r'(<([^:]+:[^\s"<>]+)>|(([A-Za-z0-9]|-)+):([A-Za-z0-9]+))'
@@ -44,21 +53,43 @@ literal = Regex(r_literal)
 iriOrVariable = MatchFirst([iri, variable])
 
 # Any valid RDF terms
-rdfTerm = MatchFirst([ottrNone, iri, literal, bnode, variable])
+anyTerm = MatchFirst([ottrNone, iri, literal, bnode, variable])
 
-# Any valid RDF terms, excluding SPARQL variables
-rdfTermNoVars = MatchFirst([ottrNone, iri, literal, bnode])
+# Any valid concrete RDF terms, i.e., excluding SPARQL variables
+concreteTerm = MatchFirst([ottrNone, iri, literal, bnode])
 
 # ----- stOTTR language rules ------
+
+# The List<T> type, where T is a type IRI
+listType = Literal("List<").suppress() + iri + Literal(">").suppress()
+
+# The type of a parameter
+paramType = MatchFirst([
+    listType.setResultsName('listType'),
+    iri.setResultsName('type')
+])
+
+# The value of an argument
+argumentValue = MatchFirst([
+    anyTerm,
+    ListOf(anyTerm),
+    Group(Literal("++").suppress() + anyTerm)
+])
+
+# The value of a concrete argument, i.e., without any variables
+concreteArgument = MatchFirst([
+    concreteTerm,
+    ListOf(concreteTerm)
+])
 
 # A template parameter definition, with optional type and nonblank
 # Examples: "?iri", "xsd:string ?literal", "! otrr:IRI ?iri" or "?iri = ex:Ann"
 param = Group(
             Optional(Keyword('!')).setResultsName('nonblank') +
             Optional(Keyword('?')).setResultsName('optional') +
-            Optional(iri).setResultsName('type') +
+            Optional(paramType) +
             variable.setResultsName('value') +
-            Optional(Keyword('=') + rdfTermNoVars.setResultsName('default'))
+            Optional(Keyword('=') + concreteTerm.setResultsName('default'))
         ).setResultsName('parameter') + Optional(',').suppress()
 
 # A list of template parameters
@@ -73,15 +104,24 @@ paramList = Group(
 instanceWithVars = Group(
                     iri.setResultsName('name') +
                     Literal('(').suppress() +
-                    OneOrMore(rdfTerm + Optional(comma).suppress()).setResultsName('arguments') +
+                    OneOrMore(argumentValue + Optional(comma).suppress()).setResultsName('arguments') +
                     Literal(')').suppress()
                 )
-# An instance of a template which cannot contains variables
-# like ottr:Triple (_:person, rdf:type, ?person)
-instanceNoVars = Group(
+
+# An expansion of an instance
+# example : cross | ottr:Triple(?s, ?p, ++?o)
+expansionMode = Group(
+    Keyword("cross").setResultsName('type') +
+    Keyword("|").suppress() +
+    instanceWithVars.setResultsName('content')
+)
+
+# A concrete instance of a template (which cannot contains variables)
+# like ex:MyTemplate (ex:Ann, foaf:Person, "Ann Strong")
+concreteInstance = Group(
                     iri.setResultsName('name') +
                     Literal('(').suppress() +
-                    OneOrMore(rdfTermNoVars + Optional(comma).suppress()).setResultsName('arguments') +
+                    OneOrMore(concreteArgument + Optional(comma).suppress()).setResultsName('arguments') +
                     Literal(')').suppress()
                 )
 
@@ -100,7 +140,7 @@ ottrTemplate = Group(
                 paramList.setResultsName('parameters') +
                 Literal('::').suppress() +
                 Literal('{').suppress() +
-                ZeroOrMore(instanceWithVars + Optional(',').suppress()).setResultsName('instances') +
+                ZeroOrMore(MatchFirst([instanceWithVars, expansionMode]) + Optional(',').suppress()).setResultsName('instances') +
                 Literal('}').suppress() + Literal('.').suppress()
             )
 
@@ -108,7 +148,7 @@ ottrTemplate = Group(
 ottrRoot = ZeroOrMore(prefixDeclaration + LineEnd().suppress()).setResultsName('prefixes') + OneOrMore(ottrTemplate + LineEnd().suppress()).setResultsName('templates')
 
 # Several concrete stOTTR instances (with no variables allowed)
-ottrRootInstances = ZeroOrMore(prefixDeclaration + LineEnd().suppress()).setResultsName('prefixes') + OneOrMore(instanceNoVars + Keyword('.').suppress() + Optional(LineEnd()).suppress()).setResultsName('instances')
+ottrRootInstances = ZeroOrMore(prefixDeclaration + LineEnd().suppress()).setResultsName('prefixes') + OneOrMore(concreteInstance + Keyword('.').suppress() + Optional(LineEnd()).suppress()).setResultsName('instances')
 
 
 def lex_templates_stottr(text):

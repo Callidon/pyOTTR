@@ -3,9 +3,10 @@
 from ottr.parsers.stottr.lexer import lex_templates_stottr, lex_instances_stottr
 from ottr.base.base_templates import OttrTriple
 from ottr.base.template import MainTemplate, NonBaseInstance
+from ottr.base.expansion import CrossTemplate
 from ottr.base.argument import ConcreteArgument, VariableArgument
 from ottr.base.utils import OTTR_TRIPLE_URI, OTTR_NONE
-from rdflib import Graph, Variable
+from rdflib import Graph, URIRef, Variable
 from rdflib.namespace import RDFS
 from rdflib.namespace import NamespaceManager
 from rdflib.util import from_n3
@@ -67,22 +68,19 @@ def parse_instance_arguments(template_id, arguments, nsm=None):
 
         Arguments:
             - template_id ``int``: ID of the template
-            - arguments ``str[]``: instance arguments to parse
+            - arguments ``rdflib.term.Identifier[]``: instance arguments (RDF terms) to parse
             - nsm :class `rdflib.namespace.NamespaceManager`: (optional) RDFlib namespace manager used to manage prefixes.
 
         Retuns:
          A list of :class`ottr.base.InstanceArgument`
     """
     args = list()
-    for ind in range(len(arguments)):
-        argument = arguments[ind]
-        value = parse_term(argument, nsm=nsm)
-        # rewrite variables to make them unique for this scope
+    for position in range(len(arguments)):
+        value = arguments[position]
         if type(value) is Variable:
-            value = unify_var(value, template_id)
-            args.append(VariableArgument(value, ind))
+            args.append(VariableArgument(value, position))
         else:
-            args.append(ConcreteArgument(value, ind))
+            args.append(ConcreteArgument(value, position))
     return args
 
 def parse_template_parameter(template_id, param, nsm=None):
@@ -120,18 +118,60 @@ def parse_template_instance(parent_template_id, instance, nsm=None):
         Returns:
          A :class`ottr.base.AbstractTemplate`
     """
+    cross_variable = None
+    # if the instance uses a cross expansion
+    if instance.type == "cross":
+        # first, find the repeated variable
+        classic_args = list()
+        for pos in range(len(instance.content.arguments)):
+            arg = instance.content.arguments[pos]
+            if type(arg) is not str:
+                cross_variable = parse_term(arg[0], nsm=nsm)
+                classic_args.append(arg[0])
+            else:
+                classic_args.append(arg)
+        # if not found, raise error
+        # TODO improve error reporting
+        if cross_variable is None:
+            raise SyntaxError("Found an expansion mode 'cross' without a repeated variable.")
+        # then, replace the current instance by the inner instance
+        instance = instance.content
+        instance.arguments = classic_args
+    # TODO supports other expansion modes
+
+    # parse arguments to RDF Terms
+    ottr_arguments = list()
+    for arg in instance.arguments:
+        arg = parse_term(arg, nsm=nsm)
+        # unify variables found during the process, so they are unique to the local scope
+        if type(arg) is Variable:
+            new_arg = unify_var(arg, parent_template_id)
+            # replace the cross variable when it gets renammed
+            if arg == cross_variable:
+                cross_variable = new_arg
+            arg = new_arg
+        ottr_arguments.append(arg)
+
+    # build the concrete template object
     template_name = parse_term(instance.name, nsm=nsm)
+    ottr_instance = None
 
     # case 1: handle base templates (using a generic method)
     if template_name in BASE_TEMPLATES:
         TemplateConstructor, nb_arguments = BASE_TEMPLATES[template_name]
-        if len(instance.arguments) != nb_arguments:
-            raise Exception("The {} template takes exactly {} arguments, but {} were provided".format(template_name.n3(), nb_arguments, len(instance.arguments)))
-        params = parse_instance_arguments(parent_template_id, instance.arguments, nsm=nsm)
-        return TemplateConstructor(*params)
+        if len(ottr_arguments) != nb_arguments:
+            raise Exception("The {} template takes exactly {} arguments, but {} were provided".format(template_name.n3(), nb_arguments, len(ottr_arguments)))
+        params = parse_instance_arguments(parent_template_id, ottr_arguments, nsm=nsm)
+        ottr_instance = TemplateConstructor(*params)
+    else:
+        # case 2: a non-base template instance
+        ottr_instance = NonBaseInstance(template_name, parse_instance_arguments(parent_template_id, ottr_arguments, nsm=nsm))
 
-    # case 2: a non-base template instance
-    return NonBaseInstance(template_name, parse_instance_arguments(parent_template_id, instance.arguments, nsm=nsm))
+    # use a cross expansion operator if needed
+    if cross_variable is not None:
+        cross_name = URIRef("http://pyOTTR?cross={}".format(str(template_name)))
+        return CrossTemplate(cross_name, ottr_instance, cross_variable)
+    return ottr_instance
 
 def parse_templates_stottr(text):
     """
@@ -210,7 +250,13 @@ def parse_instances_stottr(text):
         # parse all instance's arguments
         # and save pairs (arguments's position, arguments's RDF value)
         for pos in range(len(instance.arguments)):
-            arg = (pos, parse_term(instance.arguments[pos], nsm=nsm))
-            ottr_instance['arguments'].append(arg)
+            # case 1: the argument is a list of values
+            if type(instance.arguments[pos]) != str:
+                values = [parse_term(v, nsm=nsm) for v in instance.arguments[pos]]
+                argument = (pos, values)
+            else:
+                # case 2: the argument is a regular RTDF term
+                argument = (pos, parse_term(instance.arguments[pos], nsm=nsm))
+            ottr_instance['arguments'].append(argument)
         ottr_instances.append(ottr_instance)
     return ottr_instances

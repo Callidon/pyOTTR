@@ -92,6 +92,10 @@ class AbstractTemplate(ABC):
         """Returns a generator that expands the template"""
         pass
 
+    def is_base(self):
+        """Returns True if the template is a base template, False otherwise"""
+        return False
+
     def add_parameter(self, name, position, param_type=RDFS.Resource, optional=False, nonblank=False, default=None):
         """
             Register a new template parameter.
@@ -152,10 +156,6 @@ class NonBaseInstance(AbstractTemplate):
         # store bound & unbound instance arguments separately
         self._bound_arguments = [(x.position, x.value) for x in instance_arguments if x.is_bound]
         self._unbound_arguments = [(x.position, x.value) for x in instance_arguments if not x.is_bound]
-
-    def is_base(self):
-        """Returns True if the template is a base template, False otherwise"""
-        return False
 
     def expand(self, arguments, all_templates, bnode_suffix=(0, 0), as_nt=False):
         # increment the bnode unique prefixes, used to unify blank node acrros instance expansions
