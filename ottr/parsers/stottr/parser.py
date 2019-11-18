@@ -29,6 +29,15 @@ def unify_var(variable, suffix):
     """
     return Variable("{}_{}".format(str(variable), suffix))
 
+def term_to_rdflib(term, nsm=None):
+    """Parse a raw RDF term into the rdflib format"""
+    if type(term) == str:
+        return parse_term(term, nsm=nsm)
+    else:
+        return [parse_term(value, nsm=nsm) for value in term]
+    # else:
+    #     raise SyntaxError("The term '{}' is not a valid RDF term".format(term))
+
 def get_default_nsm():
     """Get an rdflib NamespaceManager wirh default prefixes configured"""
     nsm = NamespaceManager(Graph())
@@ -142,7 +151,7 @@ def parse_template_instance(parent_template_id, instance, nsm=None):
     # parse arguments to RDF Terms
     ottr_arguments = list()
     for arg in instance.arguments:
-        arg = parse_term(arg, nsm=nsm)
+        arg = term_to_rdflib(arg, nsm=nsm)
         # unify variables found during the process, so they are unique to the local scope
         if type(arg) is Variable:
             new_arg = unify_var(arg, parent_template_id)
@@ -250,13 +259,7 @@ def parse_instances_stottr(text):
         # parse all instance's arguments
         # and save pairs (arguments's position, arguments's RDF value)
         for pos in range(len(instance.arguments)):
-            # case 1: the argument is a list of values
-            if type(instance.arguments[pos]) != str:
-                values = [parse_term(v, nsm=nsm) for v in instance.arguments[pos]]
-                argument = (pos, values)
-            else:
-                # case 2: the argument is a regular RTDF term
-                argument = (pos, parse_term(instance.arguments[pos], nsm=nsm))
+            argument = (pos, term_to_rdflib(instance.arguments[pos], nsm=nsm))
             ottr_instance['arguments'].append(argument)
         ottr_instances.append(ottr_instance)
     return ottr_instances

@@ -8,15 +8,45 @@ from rdflib.namespace import FOAF, RDF
 fixtures = [
     ("""
         @prefix ex: <http://example.org#>.
-        ex:Person[ List<ottr:IRI> ?emails ] :: {
-            cross | ottr:Triple (_:person, foaf:mbox, ++?emails )
+        ex:Person[ ottr:IRI ?iri, List<ottr:IRI> ?emails ] :: {
+            cross | ottr:Triple (?iri, foaf:mbox, ++?emails )
         } .
     """, """
         @prefix ex: <http://example.org#>.
-        ex:Person( (<mailto:ann.strong@gmail.com>, <mailto:ann.strong@hotmail.fr>) ).
+        ex:Person( ex:Ann, (<mailto:ann.strong@gmail.com>, <mailto:ann.strong@hotmail.fr>) ).
     """, [
-        (BNode("person_0_0"), FOAF.mbox, URIRef("mailto:ann.strong@gmail.com")),
-        (BNode("person_0_0"), FOAF.mbox, URIRef("mailto:ann.strong@hotmail.fr"))
+        (URIRef("http://example.org#Ann"), FOAF.mbox, URIRef("mailto:ann.strong@gmail.com")),
+        (URIRef("http://example.org#Ann"), FOAF.mbox, URIRef("mailto:ann.strong@hotmail.fr"))
+    ]),
+    ("""
+        @prefix ex: <http://example.org#>.
+        ex:Emails [ ?iri, List<ottr:IRI> ?emails ] :: {
+            cross | ottr:Triple (?iri, foaf:mbox, ++?emails )
+        } .
+        ex:Person[ ottr:IRI ?iri, List<ottr:IRI> ?emails ] :: {
+            ex:Emails(?iri, ?emails)
+        } .
+    """, """
+        @prefix ex: <http://example.org#>.
+        ex:Person( ex:Ann, (<mailto:ann.strong@gmail.com>, <mailto:ann.strong@hotmail.fr>) ).
+    """, [
+        (URIRef("http://example.org#Ann"), FOAF.mbox, URIRef("mailto:ann.strong@gmail.com")),
+        (URIRef("http://example.org#Ann"), FOAF.mbox, URIRef("mailto:ann.strong@hotmail.fr"))
+    ]),
+    ("""
+        @prefix ex: <http://example.org#>.
+        ex:Emails [ ?iri, List<ottr:IRI> ?emails ] :: {
+            cross | ottr:Triple (?iri, foaf:mbox, ++?emails )
+        } .
+        ex:Person[ ottr:IRI ?iri] :: {
+            ex:Emails(?iri, (<mailto:ann.strong@gmail.com>, <mailto:ann.strong@hotmail.fr>))
+        } .
+    """, """
+        @prefix ex: <http://example.org#>.
+        ex:Person(ex:Ann).
+    """, [
+        (URIRef("http://example.org#Ann"), FOAF.mbox, URIRef("mailto:ann.strong@gmail.com")),
+        (URIRef("http://example.org#Ann"), FOAF.mbox, URIRef("mailto:ann.strong@hotmail.fr"))
     ])
 ]
 
