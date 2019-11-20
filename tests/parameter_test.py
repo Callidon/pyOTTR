@@ -2,7 +2,7 @@
 # Author: Thomas MINIER - MIT License 2019
 import pytest
 from ottr import OttrGenerator
-from rdflib import BNode, Literal, URIRef
+from rdflib import Literal, URIRef
 from rdflib.namespace import RDF, FOAF
 
 failing_tests = [
@@ -56,7 +56,7 @@ correct_tests = [
     """, """
         @prefix ex: <http://example.org#>.
         ex:Person (ex:Ann).
-    """, [ (URIRef("http://example.org#Ann"), RDF.type, FOAF.Person) ]),
+    """, [(URIRef("http://example.org#Ann"), RDF.type, FOAF.Person)]),
     ("""
         @prefix ex: <http://example.org#>.
         ex:Person[ ottr:IRI ?uri, xsd:integer ?age ] :: {
@@ -65,7 +65,7 @@ correct_tests = [
     """, """
         @prefix ex: <http://example.org#>.
         ex:Person(ex:Ann, "12"^^xsd:integer).
-    """, [ (URIRef("http://example.org#Ann"), FOAF.age, Literal(12)) ]),
+    """, [(URIRef("http://example.org#Ann"), FOAF.age, Literal(12))]),
     ("""
         @prefix ex: <http://example.org#>.
         ex:Person[ ! ?uri ] :: {
@@ -74,7 +74,7 @@ correct_tests = [
     """, """
         @prefix ex: <http://example.org#>.
         ex:Person(ex:Ann).
-    """, [ (URIRef("http://example.org#Ann"), RDF.type, FOAF.Person) ]),
+    """, [(URIRef("http://example.org#Ann"), RDF.type, FOAF.Person)]),
     ("""
         @prefix ex: <http://example.org#>.
         ex:Person[ ?uri = ex:Ann ] :: {
@@ -83,15 +83,17 @@ correct_tests = [
     """, """
         @prefix ex: <http://example.org#>.
         ex:Person(none).
-    """, [ (URIRef("http://example.org#Ann"), RDF.type, FOAF.Person) ])
+    """, [(URIRef("http://example.org#Ann"), RDF.type, FOAF.Person)])
 ]
+
 
 @pytest.mark.parametrize("template,instance", failing_tests)
 def test_invalid_parameter(template, instance):
     gen = OttrGenerator()
     gen.load_templates(template)
     with pytest.raises(Exception):
-        instances = gen.instanciate(instance)
+        gen.instanciate(instance)
+
 
 @pytest.mark.parametrize("template,instance,expected", correct_tests)
 def test_valid_parameter(template, instance, expected):

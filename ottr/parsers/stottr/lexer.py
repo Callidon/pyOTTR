@@ -1,22 +1,23 @@
 # lexer.py
 # Author: Thomas MINIER - MIT License 2019
 import re
-from pyparsing import CaselessKeyword, Keyword, LineEnd, Literal, MatchFirst, OneOrMore, Optional, Group, Regex, Word, ZeroOrMore
+from pyparsing import CaselessKeyword, Keyword, LineEnd, Literal, MatchFirst, OneOrMore, Optional, Group, Regex, ZeroOrMore
 
 
 def ListOf(content, start_char="(", end_char=")", separator=","):
     """Build a group that matches a list of the same tokens"""
-    list_content = MatchFirst([
-        content,
-        content + Optional(Literal(separator)).suppress()
-    ])
+    # list_content = MatchFirst([
+    #     content,
+    #     content + Optional(Literal(separator)).suppress()
+    # ])
     return Group(Literal(start_char).suppress() + OneOrMore(content + Optional(Literal(separator)).suppress()) + Literal(end_char).suppress())
 
 # ----- General terms ------
 
+
 uriref = r'(<([^:]+:[^\s"<>]+)>|(([A-Za-z0-9]|-)+):([A-Za-z0-9]+))'
 literal = r'"([^"\\]*(?:\\.[^"\\]*)*)"'
-litinfo = r'(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\^\^' + uriref  + r')?'
+litinfo = r'(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\^\^' + uriref + r')?'
 
 r_line = re.compile(r'([^\r\n]*)(?:\r\n|\r|\n)')
 r_wspace = re.compile(r'[ \t]*')
@@ -85,28 +86,28 @@ concreteArgument = MatchFirst([
 # A template parameter definition, with optional type and nonblank
 # Examples: "?iri", "xsd:string ?literal", "! otrr:IRI ?iri" or "?iri = ex:Ann"
 param = Group(
-            Optional(Keyword('!')).setResultsName('nonblank') +
-            Optional(Keyword('?')).setResultsName('optional') +
-            Optional(paramType) +
-            variable.setResultsName('value') +
-            Optional(Keyword('=') + concreteTerm.setResultsName('default'))
-        ).setResultsName('parameter') + Optional(',').suppress()
+    Optional(Keyword('!')).setResultsName('nonblank') +
+    Optional(Keyword('?')).setResultsName('optional') +
+    Optional(paramType) +
+    variable.setResultsName('value') +
+    Optional(Keyword('=') + concreteTerm.setResultsName('default'))
+).setResultsName('parameter') + Optional(',').suppress()
 
 # A list of template parameters
 paramList = Group(
-                Literal('[').suppress() +
-                ZeroOrMore(param) +
-                Literal(']').suppress()
-            )
+    Literal('[').suppress() +
+    ZeroOrMore(param) +
+    Literal(']').suppress()
+)
 
 # An instance of a template which may contains variables
 # like ottr:Triple (_:person, rdf:type, ?person)
 instanceWithVars = Group(
-                    iri.setResultsName('name') +
-                    Literal('(').suppress() +
-                    OneOrMore(argumentValue + Optional(comma).suppress()).setResultsName('arguments') +
-                    Literal(')').suppress()
-                )
+    iri.setResultsName('name') +
+    Literal('(').suppress() +
+    OneOrMore(argumentValue + Optional(comma).suppress()).setResultsName('arguments') +
+    Literal(')').suppress()
+)
 
 # An expansion of an instance
 # example : cross | ottr:Triple(?s, ?p, ++?o)
@@ -119,30 +120,33 @@ expansionMode = Group(
 # A concrete instance of a template (which cannot contains variables)
 # like ex:MyTemplate (ex:Ann, foaf:Person, "Ann Strong")
 concreteInstance = Group(
-                    iri.setResultsName('name') +
-                    Literal('(').suppress() +
-                    OneOrMore(concreteArgument + Optional(comma).suppress()).setResultsName('arguments') +
-                    Literal(')').suppress()
-                )
+    iri.setResultsName('name') +
+    Literal('(').suppress() +
+    OneOrMore(concreteArgument + Optional(comma).suppress()).setResultsName('arguments') +
+    Literal(')').suppress()
+)
 
 # A stOTTR prefix declaration
 prefixDeclaration = Group(
-                CaselessKeyword("@prefix").suppress() +
-                prefixName.setResultsName('name') +
-                Literal(':').suppress() +
-                iri.setResultsName('value') +
-                Literal('.').suppress()
-            )
+    CaselessKeyword("@prefix").suppress() +
+    prefixName.setResultsName('name') +
+    Literal(':').suppress() +
+    iri.setResultsName('value') +
+    Literal('.').suppress()
+)
 
 # A stOTTR template
 ottrTemplate = Group(
-                iri.setResultsName('name') +
-                paramList.setResultsName('parameters') +
-                Literal('::').suppress() +
-                Literal('{').suppress() +
-                ZeroOrMore(MatchFirst([instanceWithVars, expansionMode]) + Optional(',').suppress()).setResultsName('instances') +
-                Literal('}').suppress() + Literal('.').suppress()
-            )
+    iri.setResultsName('name') +
+    paramList.setResultsName('parameters') +
+    Literal('::').suppress() +
+    Literal('{').suppress() +
+    ZeroOrMore(
+        MatchFirst([instanceWithVars, expansionMode]) +
+        Optional(',').suppress()
+    ).setResultsName('instances') +
+    Literal('}').suppress() + Literal('.').suppress()
+)
 
 # Several stOTTR templates
 ottrRoot = ZeroOrMore(prefixDeclaration + LineEnd().suppress()).setResultsName('prefixes') + OneOrMore(ottrTemplate + LineEnd().suppress()).setResultsName('templates')
@@ -154,6 +158,7 @@ ottrRootInstances = ZeroOrMore(prefixDeclaration + LineEnd().suppress()).setResu
 def lex_templates_stottr(text):
     """Run the lexer on a set of stOTTR template defintions"""
     return ottrRoot.parseString(text)
+
 
 def lex_instances_stottr(text):
     """Run the lexer on a set of stOTTR instances"""

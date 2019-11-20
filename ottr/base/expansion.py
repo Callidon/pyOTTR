@@ -2,6 +2,7 @@
 # Author: Thomas MINIER - MIT License 2019
 from ottr.base.template import AbstractTemplate
 
+
 class CrossTemplate(AbstractTemplate):
     """A CrossTemplate expands a template instance using the 'cross' expansion mode."""
 

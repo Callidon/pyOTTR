@@ -2,8 +2,8 @@
 # Author: Thomas MINIER - MIT License 2019
 import pytest
 from ottr import OttrGenerator
-from rdflib import BNode, Literal, URIRef
-from rdflib.namespace import FOAF, RDF
+from rdflib import URIRef
+from rdflib.namespace import FOAF
 
 fixtures = [
     ("""
@@ -49,6 +49,7 @@ fixtures = [
         (URIRef("http://example.org#Ann"), FOAF.mbox, URIRef("mailto:ann.strong@hotmail.fr"))
     ])
 ]
+
 
 @pytest.mark.parametrize("template,instance,expected", fixtures)
 def test_expansion_modes(template, instance, expected):

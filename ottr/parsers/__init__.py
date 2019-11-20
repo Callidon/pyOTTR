@@ -19,7 +19,7 @@ def parse_templates(text, format="stottr"):
     """
     if format.lower() == 'stottr':
         return parse_templates_stottr(text)
-    raise TypeError("Unsupported language '{}'. Only the stOTTR format is currently supported.".format(format))
+    raise TypeError(f"Unsupported language '{format}'. Only the stOTTR format is currently supported.")
 
 
 def parse_instances(text, format="stottr"):
@@ -30,4 +30,4 @@ def parse_instances(text, format="stottr"):
     """
     if format.lower() == 'stottr':
         return parse_instances_stottr(text)
-    raise TypeError("Unsupported language '{}'. Only the stOTTR format is currently supported.".format(format))
+    raise TypeError(f"Unsupported language '{format}'. Only the stOTTR format is currently supported.")

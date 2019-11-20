@@ -17,6 +17,6 @@ o-rdfs:ResourceDescription[ ottr:IRI ?iri, ? ?label, ? ?comment, ? ?seeAlso, ? ?
 
 o-rdfs:TypedResourceDescription[ ottr:IRI ?iri, ottr:IRI ?type, ? ?label, ? ?comment, ? ?seeAlso, ? ?isDefinedBy ] :: {
     ottr:Triple(?iri, rdf:type, ?type),
-    o-rdfs:ResourceDescription(?iri, ?label, ?comment, ?seeAlso, ?isDefinedBy)    
+    o-rdfs:ResourceDescription(?iri, ?label, ?comment, ?seeAlso, ?isDefinedBy)
 } .
 """

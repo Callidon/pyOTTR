@@ -1,9 +1,10 @@
 # template.py
 # Author: Thomas MINIER - MIT License 2019
 from abc import ABC, abstractmethod
-from rdflib import BNode, Literal, URIRef, Variable
+from rdflib import BNode, Literal, Variable
 from rdflib.namespace import RDFS
 from ottr.base.utils import OTTR_IRI, OTTR_NONE
+
 
 class TemplateParameter(object):
     """
@@ -75,6 +76,7 @@ class TemplateParameter(object):
         # otherwise, everything is fine :-)
         return True, value, None
 
+
 class AbstractTemplate(ABC):
     """An abstract OTTR Template."""
 
@@ -141,10 +143,11 @@ class MainTemplate(AbstractTemplate):
     def __repr__(self):
         return self.__str__()
 
-    def expand(self, arguments, all_templates, bnode_suffix=(0, 0),  as_nt=False):
+    def expand(self, arguments, all_templates, bnode_suffix=(0, 0), as_nt=False):
         """Returns a generator that expands the template"""
         for instance in self._instances:
             yield from instance.expand(arguments, all_templates, bnode_suffix=bnode_suffix, as_nt=as_nt)
+
 
 class NonBaseInstance(AbstractTemplate):
     """

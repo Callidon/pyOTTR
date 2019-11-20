@@ -41,6 +41,7 @@ fixtures = [
     ])
 ]
 
+
 @pytest.mark.parametrize("template,instance,expected", fixtures)
 def test_triple_generation(template, instance, expected):
     gen = OttrGenerator()

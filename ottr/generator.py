@@ -2,7 +2,7 @@
 # Author: Thomas MINIER - MIT License 2019
 from ottr.parsers import parse_templates, parse_instances
 from ottr.tpl import RDF_TEMPLATES, RDFS_TEMPLATES
-from rdflib import URIRef, Variable, Literal
+
 
 class OttrGenerator(object):
     """
@@ -55,6 +55,7 @@ class OttrGenerator(object):
                 # TODO report error but do not crash??
                 pass
         return OttrInstances(self._instance_id, to_execute, self._templates)
+
 
 class OttrInstances(object):
     """Compiled OTTR instances, ready to be executed to produce RDF triples."""

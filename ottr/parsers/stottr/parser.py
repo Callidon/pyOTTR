@@ -17,6 +17,7 @@ BASE_TEMPLATES = {
     OTTR_TRIPLE_URI: (OttrTriple, 3)
 }
 
+
 def unify_var(variable, suffix):
     """
         Makes a :class`rdflib.term.Variable` unique by appending a suffix to it.
@@ -27,7 +28,8 @@ def unify_var(variable, suffix):
         Returns:
             A :class`rdflib.term.Variable`
     """
-    return Variable("{}_{}".format(str(variable), suffix))
+    return Variable(f"{variable}_{suffix}")
+
 
 def term_to_rdflib(term, nsm=None):
     """Parse a raw RDF term into the rdflib format"""
@@ -37,6 +39,7 @@ def term_to_rdflib(term, nsm=None):
         return [parse_term(value, nsm=nsm) for value in term]
     # else:
     #     raise SyntaxError("The term '{}' is not a valid RDF term".format(term))
+
 
 def get_default_nsm():
     """Get an rdflib NamespaceManager wirh default prefixes configured"""
@@ -55,6 +58,7 @@ def get_default_nsm():
     nsm.bind('o-rdfs', 'http://tpl.ottr.xyz/rdfs/0.1/')
     return nsm
 
+
 def parse_term(term, nsm=None):
     """
         Parse a RDF Term from text format to rdflib format.
@@ -70,6 +74,7 @@ def parse_term(term, nsm=None):
     if term.startswith('?'):
         return Variable(term[1:])
     return from_n3(term, nsm=nsm)
+
 
 def parse_instance_arguments(template_id, arguments, nsm=None):
     """
@@ -91,6 +96,7 @@ def parse_instance_arguments(template_id, arguments, nsm=None):
         else:
             args.append(ConcreteArgument(value, position))
     return args
+
 
 def parse_template_parameter(template_id, param, nsm=None):
     """
@@ -114,6 +120,7 @@ def parse_template_parameter(template_id, param, nsm=None):
     template_param['nonblank'] = True if len(param.nonblank) > 0 else False
     template_param['default'] = parse_term(param.default, nsm=nsm) if len(param.default) > 0 else None
     return template_param
+
 
 def parse_template_instance(parent_template_id, instance, nsm=None):
     """
@@ -169,7 +176,7 @@ def parse_template_instance(parent_template_id, instance, nsm=None):
     if template_name in BASE_TEMPLATES:
         TemplateConstructor, nb_arguments = BASE_TEMPLATES[template_name]
         if len(ottr_arguments) != nb_arguments:
-            raise Exception("The {} template takes exactly {} arguments, but {} were provided".format(template_name.n3(), nb_arguments, len(ottr_arguments)))
+            raise Exception(f"The {template_name.n3()} template takes exactly {nb_arguments} arguments, but {len(ottr_arguments)} were provided")
         params = parse_instance_arguments(parent_template_id, ottr_arguments, nsm=nsm)
         ottr_instance = TemplateConstructor(*params)
     else:
@@ -178,9 +185,10 @@ def parse_template_instance(parent_template_id, instance, nsm=None):
 
     # use a cross expansion operator if needed
     if cross_variable is not None:
-        cross_name = URIRef("http://pyOTTR?cross={}".format(str(template_name)))
+        cross_name = URIRef(f"http://pyOTTR?cross={template_name}")
         return CrossTemplate(cross_name, ottr_instance, cross_variable)
     return ottr_instance
+
 
 def parse_templates_stottr(text):
     """
