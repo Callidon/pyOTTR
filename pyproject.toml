@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "pyottr"
+version = "0.1.0"
+description = "Manipulate OTTR Reasonable Ontology Templates in Python"
+documentation = "https://callidon.github.io/pyOTTR"
+authors = ["Thomas Minier <tminier01@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+keywords = [
+  "rdf",
+  "owl",
+  "ottr",
+  "template",
+  "ontology"
+]
+classifiers = [
+  "Topic :: Scientific/Engineering",
+  "Topic :: Software Development :: Compilers",
+  "Topic :: Software Development :: Code Generators",
+  "Topic :: Text Processing :: Markup"
+]
+include = [ "LICENSE" ]
+
+[tool.poetry.urls]
+"Github" = "https://github.com/Callidon/pyOTTR"
+"Bug Tracker" = "https://github.com/Callidon/pyOTTR/issues"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+rdflib = "^4.2"
+pyparsing = "^2.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.3"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
