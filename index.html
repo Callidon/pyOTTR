@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Welcome to ottr’s documentation! &#8212; ottr 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quickstart" href="quickstart.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">ottr</a></h1>
+
+
+
+<p class="blurb">Manipulate OTTR Reasonable Ontology Templates in Python</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Callidon&repo=pyOTTR&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/Callidon/pyOTTR">
+    <img
+        alt="https://secure.travis-ci.org/Callidon/pyOTTR.svg?branch=master"
+        src="https://secure.travis-ci.org/Callidon/pyOTTR.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ottr.html">ottr package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="quickstart.html" title="next chapter">Quickstart</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-ottr-s-documentation">
+<h1>Welcome to ottr’s documentation!<a class="headerlink" href="#welcome-to-ottr-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This library allows you to manipulate
+<a class="reference external" href="http://ottr.xyz/">OTTR Reasonable Ontology Templates</a> in Python.</p>
+<p>Reasonable Ontology Templates (OTTR) is a language for representing ontology modelling patterns,
+and is designed to support interaction with OWL or RDF knowledge bases at a higher level of abstraction, using modelling patterns rather than OWL axioms or RDF triples. This includes:</p>
+<ul class="simple">
+<li><p>building knowledge bases by instantiating templates;</p></li>
+<li><p>communicating (presenting, transferring and visualising) the knowledge base as a set of template instances at different levels of abstraction; and</p></li>
+<li><p>securing and improving the quality and sustainability of the knowledge base via structural and semantic analysis of the templates used to construct the knowledge base.</p></li>
+</ul>
+<p>You can learn more about OTTR on the <a class="reference external" href="http://ottr.xyz/">official website</a>.</p>
+<div class="section" id="supported-features">
+<h2>Supported features<a class="headerlink" href="#supported-features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="http://spec.ottr.xyz/pOTTR/0.1/01-basics.html#2_Templates_and_Instances">Definition and execution of templates</a> in the <a class="reference external" href="http://spec.ottr.xyz/stOTTR/0.1/">stOTTR syntax</a>.</p></li>
+<li><p><a class="reference external" href="http://spec.ottr.xyz/pOTTR/0.1/01-basics.html#3_Nesting_templates">Nesting templates</a>.</p></li>
+<li><p><a class="reference external" href="http://spec.ottr.xyz/pOTTR/0.1/01-basics.html#4_Types">Type checking</a>.</p></li>
+<li><p><a class="reference external" href="http://spec.ottr.xyz/pOTTR/0.1/01-basics.html#5_NonBlank">Non blank</a>, <a class="reference external" href="http://spec.ottr.xyz/pOTTR/0.1/01-basics.html#6_Optionals_and_None">Optional</a> and <a class="reference external" href="http://spec.ottr.xyz/pOTTR/0.1/01-basics.html#7_Default_values">default values</a> for template parameters.</p></li>
+<li><p><em>RDF and RDFS templates</em> from the <a class="reference external" href="http://tpl.ottr.xyz/">OTTR template library</a> are loaded by default.</p></li>
+</ul>
+</div>
+<div class="section" id="in-development">
+<h2>In development<a class="headerlink" href="#in-development" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="http://spec.ottr.xyz/pOTTR/0.1/01-basics.html#8_Expansion_modes">Expansion modes</a>.</p></li>
+<li><p>Support for <a class="reference external" href="http://tpl.ottr.xyz/owl/">OWL templates</a> from the template library.</p></li>
+</ul>
+</div>
+<div class="section" id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#getting-started">Getting started</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ottr.html">ottr package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ottr.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ottr.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ottr.html#module-ottr.generator">ottr.generator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ottr.html#module-ottr">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2020, Thomas Minier.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ottr.base package &#8212; ottr 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ottr.parsers package" href="ottr.parsers.html" />
+    <link rel="prev" title="ottr package" href="ottr.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ottr</a></h1>
+
+
+
+<p class="blurb">Manipulate OTTR Reasonable Ontology Templates in Python</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Callidon&repo=pyOTTR&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/Callidon/pyOTTR">
+    <img
+        alt="https://secure.travis-ci.org/Callidon/pyOTTR.svg?branch=master"
+        src="https://secure.travis-ci.org/Callidon/pyOTTR.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="ottr.html">ottr package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ottr.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ottr.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ottr.html#module-ottr.generator">ottr.generator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ottr.html#module-ottr">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="ottr.html">ottr package</a><ul>
+      <li>Previous: <a href="ottr.html" title="previous chapter">ottr package</a></li>
+      <li>Next: <a href="ottr.parsers.html" title="next chapter">ottr.parsers package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="ottr-base-package">
+<h1>ottr.base package<a class="headerlink" href="#ottr-base-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ottr.base.argument">
+<span id="ottr-base-argument-module"></span><h2>ottr.base.argument module<a class="headerlink" href="#module-ottr.base.argument" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ottr.base.argument.ConcreteArgument">
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.argument.</code><code class="sig-name descname">ConcreteArgument</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">position</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.ConcreteArgument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ottr.base.argument.InstanceArgument" title="ottr.base.argument.InstanceArgument"><code class="xref py py-class docutils literal notranslate"><span class="pre">ottr.base.argument.InstanceArgument</span></code></a></p>
+<p>An argument that evaluates to a constant RDF term, i.e., a RDF term.</p>
+<dl class="method">
+<dt id="ottr.base.argument.ConcreteArgument.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">bindings={}</em>, <em class="sig-param">bnode_suffix=(0</em>, <em class="sig-param">0)</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.ConcreteArgument.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the argument using an optional set of bindings</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ottr.base.argument.ConcreteArgument.is_bound">
+<em class="property">property </em><code class="sig-name descname">is_bound</code><a class="headerlink" href="#ottr.base.argument.ConcreteArgument.is_bound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the argument is bound, False otherwise</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ottr.base.argument.InstanceArgument">
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.argument.</code><code class="sig-name descname">InstanceArgument</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">position</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.InstanceArgument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>An instance argument, which corresponds to
+the parameter of a template.</p>
+<dl class="method">
+<dt id="ottr.base.argument.InstanceArgument.evaluate">
+<em class="property">abstract </em><code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">bindings={}</em>, <em class="sig-param">bnode_suffix=0</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.InstanceArgument.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the argument using an optional set of bindings</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ottr.base.argument.InstanceArgument.is_bound">
+<em class="property">property </em><code class="sig-name descname">is_bound</code><a class="headerlink" href="#ottr.base.argument.InstanceArgument.is_bound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the argument is bound, False otherwise</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ottr.base.argument.InstanceArgument.position">
+<em class="property">property </em><code class="sig-name descname">position</code><a class="headerlink" href="#ottr.base.argument.InstanceArgument.position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ottr.base.argument.InstanceArgument.value">
+<em class="property">property </em><code class="sig-name descname">value</code><a class="headerlink" href="#ottr.base.argument.InstanceArgument.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ottr.base.argument.URIArgument">
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.argument.</code><code class="sig-name descname">URIArgument</code><span class="sig-paren">(</span><em class="sig-param">uri</em>, <em class="sig-param">position</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.URIArgument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ottr.base.argument.ConcreteArgument" title="ottr.base.argument.ConcreteArgument"><code class="xref py py-class docutils literal notranslate"><span class="pre">ottr.base.argument.ConcreteArgument</span></code></a></p>
+<p>A ConcreteArgument that evaluates to an URI</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ottr.base.argument.VariableArgument">
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.argument.</code><code class="sig-name descname">VariableArgument</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">position</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.VariableArgument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ottr.base.argument.InstanceArgument" title="ottr.base.argument.InstanceArgument"><code class="xref py py-class docutils literal notranslate"><span class="pre">ottr.base.argument.InstanceArgument</span></code></a></p>
+<p>A variable argument, i.e., a SPARQL variable</p>
+<dl class="method">
+<dt id="ottr.base.argument.VariableArgument.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">bindings={}</em>, <em class="sig-param">bnode_suffix=(0</em>, <em class="sig-param">0)</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.VariableArgument.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the argument using an optional set of bindings</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ottr.base.base_templates">
+<span id="ottr-base-base-templates-module"></span><h2>ottr.base.base_templates module<a class="headerlink" href="#module-ottr.base.base_templates" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ottr.base.base_templates.OttrTriple">
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.base_templates.</code><code class="sig-name descname">OttrTriple</code><span class="sig-paren">(</span><em class="sig-param">subject_arg</em>, <em class="sig-param">predicate_arg</em>, <em class="sig-param">object_arg</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.base_templates.OttrTriple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ottr.base.template.AbstractTemplate" title="ottr.base.template.AbstractTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ottr.base.template.AbstractTemplate</span></code></a></p>
+<p>The default ottr:Triple base template.</p>
+<dl class="method">
+<dt id="ottr.base.base_templates.OttrTriple.expand">
+<code class="sig-name descname">expand</code><span class="sig-paren">(</span><em class="sig-param">arguments</em>, <em class="sig-param">all_templates</em>, <em class="sig-param">bnode_suffix=(0</em>, <em class="sig-param">0)</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.base_templates.OttrTriple.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a generator that expands the template</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ottr.base.base_templates.OttrTriple.is_base">
+<code class="sig-name descname">is_base</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.base_templates.OttrTriple.is_base" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the template is a base template, False otherwise</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ottr.base.expansion">
+<span id="ottr-base-expansion-module"></span><h2>ottr.base.expansion module<a class="headerlink" href="#module-ottr.base.expansion" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ottr.base.expansion.CrossTemplate">
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.expansion.</code><code class="sig-name descname">CrossTemplate</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">instance</em>, <em class="sig-param">cross_variable</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.expansion.CrossTemplate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ottr.base.template.AbstractTemplate" title="ottr.base.template.AbstractTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ottr.base.template.AbstractTemplate</span></code></a></p>
+<p>A CrossTemplate expands a template instance using the ‘cross’ expansion mode.</p>
+<dl class="method">
+<dt id="ottr.base.expansion.CrossTemplate.expand">
+<code class="sig-name descname">expand</code><span class="sig-paren">(</span><em class="sig-param">arguments</em>, <em class="sig-param">all_templates</em>, <em class="sig-param">bnode_suffix=(0</em>, <em class="sig-param">0)</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.expansion.CrossTemplate.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a generator that expands the template</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ottr.base.template">
+<span id="ottr-base-template-module"></span><h2>ottr.base.template module<a class="headerlink" href="#module-ottr.base.template" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ottr.base.template.AbstractTemplate">
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.template.</code><code class="sig-name descname">AbstractTemplate</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.AbstractTemplate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>An abstract OTTR Template.</p>
+<dl class="method">
+<dt id="ottr.base.template.AbstractTemplate.add_parameter">
+<code class="sig-name descname">add_parameter</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">position</em>, <em class="sig-param">param_type=rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#Resource')</em>, <em class="sig-param">optional=False</em>, <em class="sig-param">nonblank=False</em>, <em class="sig-param">default=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.AbstractTemplate.add_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a new template parameter.</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><ul class="simple">
+<li><p>name <code class="docutils literal notranslate"><span class="pre">str</span></code>: parameter’s name.</p></li>
+<li><p>position <code class="docutils literal notranslate"><span class="pre">int</span></code>: parameter’s position in the template definition.</p></li>
+<li><p>param_type :class`rdflib.term.URIRef`: (optional) parameter’s type. Default is rdfs:Resource.</p></li>
+<li><p>optional <code class="docutils literal notranslate"><span class="pre">bool</span></code>: (optional) if the parameter is optional or not. Default is <cite>False</cite>.</p></li>
+<li><p>nonblank <code class="docutils literal notranslate"><span class="pre">bool</span></code>: (optional) if the parameter accepts blank node or not. Default is <cite>False</cite>.</p></li>
+<li><p>default :class`rdflib.term.Identifier`: (optional) the parameter’s default value if it is set to ottr:None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ottr.base.template.AbstractTemplate.expand">
+<em class="property">abstract </em><code class="sig-name descname">expand</code><span class="sig-paren">(</span><em class="sig-param">arguments</em>, <em class="sig-param">all_templates</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.AbstractTemplate.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a generator that expands the template</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ottr.base.template.AbstractTemplate.format_arguments">
+<code class="sig-name descname">format_arguments</code><span class="sig-paren">(</span><em class="sig-param">arguments</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.AbstractTemplate.format_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format a list of execution arguments, i.e., a list of tuple (position, value), so that they can be used for template expansion</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ottr.base.template.AbstractTemplate.is_base">
+<code class="sig-name descname">is_base</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.AbstractTemplate.is_base" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the template is a base template, False otherwise</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ottr.base.template.AbstractTemplate.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#ottr.base.template.AbstractTemplate.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ottr.base.template.MainTemplate">
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.template.</code><code class="sig-name descname">MainTemplate</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">instances</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.MainTemplate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ottr.base.template.AbstractTemplate" title="ottr.base.template.AbstractTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ottr.base.template.AbstractTemplate</span></code></a></p>
+<p>An OTTR template definition, which contains several instances to expand.</p>
+<dl class="method">
+<dt id="ottr.base.template.MainTemplate.expand">
+<code class="sig-name descname">expand</code><span class="sig-paren">(</span><em class="sig-param">arguments</em>, <em class="sig-param">all_templates</em>, <em class="sig-param">bnode_suffix=(0</em>, <em class="sig-param">0)</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.MainTemplate.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a generator that expands the template</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ottr.base.template.NonBaseInstance">
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.template.</code><code class="sig-name descname">NonBaseInstance</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">instance_arguments</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.NonBaseInstance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ottr.base.template.AbstractTemplate" title="ottr.base.template.AbstractTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ottr.base.template.AbstractTemplate</span></code></a></p>
+<p>A non-base OTTR Template instance.</p>
+<dl class="method">
+<dt id="ottr.base.template.NonBaseInstance.expand">
+<code class="sig-name descname">expand</code><span class="sig-paren">(</span><em class="sig-param">arguments</em>, <em class="sig-param">all_templates</em>, <em class="sig-param">bnode_suffix=(0</em>, <em class="sig-param">0)</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.NonBaseInstance.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a generator that expands the template</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ottr.base.template.TemplateParameter">
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.template.</code><code class="sig-name descname">TemplateParameter</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">param_type</em>, <em class="sig-param">optional</em>, <em class="sig-param">nonblank</em>, <em class="sig-param">default=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.TemplateParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The parameter of an OTTR Template.</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><ul class="simple">
+<li><p>name <code class="docutils literal notranslate"><span class="pre">str</span></code>: parameter’s name.</p></li>
+<li><p>param_type :class`rdflib.term.URIRef`: parameter’s type.</p></li>
+<li><p>optional <code class="docutils literal notranslate"><span class="pre">bool</span></code>: if the parameter is optional or not.</p></li>
+<li><p>nonblank <code class="docutils literal notranslate"><span class="pre">bool</span></code>: if the parameter accepts blank node or not.</p></li>
+<li><p>default :class`rdflib.term.Identifier`: (optional) the parameter’s default value if it is set to ottr:None.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="ottr.base.template.TemplateParameter.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#ottr.base.template.TemplateParameter.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parameter name, i.e., a SPARQL variable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ottr.base.template.TemplateParameter.validate">
+<code class="sig-name descname">validate</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.TemplateParameter.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert that an argument can be used for this parameter, i.e., its value is compatible with the parameter definition (type, optional, non blank, etc).</p>
+<dl class="simple">
+<dt>Argument:</dt><dd><ul class="simple">
+<li><p>value :class`rdflib.term.Identifier`: Argument value</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>A tuple <code class="docutils literal notranslate"><span class="pre">(is_valid,</span> <span class="pre">value,</span> <span class="pre">error_reason)</span></code> where:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">is_valid</span></code> is a boolean which indicates the outcome of the validation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code> is the RDF value to use for the argument. Set to <code class="docutils literal notranslate"><span class="pre">None</span></code> if the validation was not successfull.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">error_reason</span></code> is an error message that indicates why the validation has failed. Set to <code class="docutils literal notranslate"><span class="pre">None</span></code> if the validation was successfull.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ottr.base.utils">
+<span id="ottr-base-utils-module"></span><h2>ottr.base.utils module<a class="headerlink" href="#module-ottr.base.utils" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ottr.base">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ottr.base" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2020, Thomas Minier.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/ottr.base.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

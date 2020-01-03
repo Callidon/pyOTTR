@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Quickstart &#8212; ottr 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ottr package" href="ottr.html" />
+    <link rel="prev" title="Welcome to ottr’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ottr</a></h1>
+
+
+
+<p class="blurb">Manipulate OTTR Reasonable Ontology Templates in Python</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Callidon&repo=pyOTTR&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/Callidon/pyOTTR">
+    <img
+        alt="https://secure.travis-ci.org/Callidon/pyOTTR.svg?branch=master"
+        src="https://secure.travis-ci.org/Callidon/pyOTTR.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting started</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ottr.html">ottr package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to ottr’s documentation!</a></li>
+      <li>Next: <a href="ottr.html" title="next chapter">ottr package</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="quickstart">
+<h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p><strong>Using pip (recommended)</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install ottr
+</pre></div>
+</div>
+<p><strong>Manual installation</strong></p>
+<p><em>Requirement:</em> <a class="reference external" href="https://python-poetry.org/">poetry</a> (v0.12 or higher).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/Callidon/pyOTTR.git
+<span class="nb">cd</span> pyOTTR/
+poetry install
+</pre></div>
+</div>
+</div>
+<div class="section" id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<p>The main class to manipulate is <cite>OttrGenerator</cite>, which is used to load OTTR templates and expand template instances.
+So, in practice, you only need to create a new generator, load some templates and then execute your instances to produce RDF triples.
+Otherwise, everything else is done using classic OTTR syntax!</p>
+<p>By default, <strong>all templates</strong> from the <a class="reference external" href="http://tpl.ottr.xyz/">OTTR template library</a> are loaded when the generator is created.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ottr</span> <span class="kn">import</span> <span class="n">OttrGenerator</span>
+<span class="c1"># An OttrGenerator is used to load templates and expand instances</span>
+<span class="n">generator</span> <span class="o">=</span> <span class="n">OttrGenerator</span><span class="p">()</span>
+
+<span class="c1"># Load a simple OTTR template definition</span>
+<span class="n">generator</span><span class="o">.</span><span class="n">load_templates</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">  @prefix ex: &lt;http://example.org#&gt;.</span>
+
+<span class="s2">  ex:FirstName [ottr:IRI ?uri, ?firstName] :: {</span>
+<span class="s2">    ottr:Triple (?uri, foaf:firstName, ?firstName )</span>
+<span class="s2">  } .</span>
+
+<span class="s2">  ex:Person[ ?firstName ] :: {</span>
+<span class="s2">    ottr:Triple (_:person, rdf:type, foaf:Person ),</span>
+<span class="s2">    ex:FirstName (_:person, ?firstName)</span>
+<span class="s2">  } .</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="c1"># Parse and prepare an instance for execution</span>
+<span class="n">instances</span> <span class="o">=</span> <span class="n">generator</span><span class="o">.</span><span class="n">instanciate</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">  @prefix ex: &lt;http://example.org#&gt;.</span>
+
+<span class="s2">  ex:Person(&quot;Ann&quot;).</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="c1"># Execute the instance, which yield RDF triples</span>
+<span class="c1"># The following prints (_:person0, rdf:type, foaf:Person) and (_:person0, foaf:firstName, &quot;Ann&quot;)</span>
+<span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">instances</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">as_nt</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;# ----- RDF triple ----- #&quot;</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">((</span><span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2020, Thomas Minier.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/quickstart.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
