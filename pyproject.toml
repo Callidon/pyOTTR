@@ -26,7 +26,7 @@ include = [ "LICENSE" ]
 "Bug Tracker" = "https://github.com/Callidon/pyOTTR/issues"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.6"
 rdflib = "^4.2"
 pyparsing = "^2.4"
 
