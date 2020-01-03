@@ -28,10 +28,12 @@ pip install ottr
 
 ## Manual installation
 
+**Requirement:** [poetry](https://python-poetry.org/) (v0.12 or higher).
+
 ```
-git clone
+git clone https://github.com/Callidon/pyOTTR.git
 cd pyOTTR/
-python setup.py install
+poetry install
 ```
 
 # Getting started
