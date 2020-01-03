@@ -1,9 +1,6 @@
 language: python
 cache: pip
-python:
-  - "3.8"
-  - "3.7"
-  - "3.6"
+python: "3.7"
 notifications:
   email: false
 before_install:
@@ -13,13 +10,12 @@ install:
   - poetry install
 script:
   - pytest
-jobs:
-  include:
-    - stage: Upload documentation to Github pages
-      script: cd docs && make html
-      provider: pages
-      github_token: $GITHUB_TOKEN
-      local_dir: docs/build/html
-      skip_cleanup: true
-      on:
-        branch: master
+before_deploy:
+  - cd docs && make html
+deploy:
+  - provider: pages
+    github_token: $GITHUB_TOKEN
+    local_dir: docs/build/html
+    skip_cleanup: true
+    on:
+      branch: master
