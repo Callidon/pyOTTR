@@ -13,3 +13,15 @@ install:
   - poetry install
 script:
   - pytest
+jobs:
+  include:
+    - stage: Upload documentation to Github pages
+      script: cd docs && make html
+      python: "3.7"
+      provider: pages
+      github_token: $GITHUB_TOKEN
+      local_dir: $TRAVIS_BUILD_DIR/docs/build/html
+      skip_cleanup: true
+      keep_history: true
+      on:
+        branch: master
