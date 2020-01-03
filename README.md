@@ -12,7 +12,7 @@ Manipulate [OTTR Reasonable Ontology Templates](http://ottr.xyz/) in Python.
 * [Nesting templates](http://spec.ottr.xyz/pOTTR/0.1/01-basics.html#3_Nesting_templates)
 * [Type checking](http://spec.ottr.xyz/pOTTR/0.1/01-basics.html#4_Types)
 * [Non blank](http://spec.ottr.xyz/pOTTR/0.1/01-basics.html#5_NonBlank), [Optional](http://spec.ottr.xyz/pOTTR/0.1/01-basics.html#6_Optionals_and_None) and [default values](http://spec.ottr.xyz/pOTTR/0.1/01-basics.html#7_Default_values) for template parameters.
-* *RDF and RDFS templates* from the [OTTR template library]([http://tpl.ottr.xyz/]) are loaded by default.
+* *RDF and RDFS templates* from the [OTTR template library](http://tpl.ottr.xyz/) are loaded by default.
 
 :wrench: **In development:**
 * [Expansion modes](http://spec.ottr.xyz/pOTTR/0.1/01-basics.html#8_Expansion_modes)
