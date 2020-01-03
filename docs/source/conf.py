@@ -62,6 +62,5 @@ html_theme_options = {
     'github_repo': 'pyOTTR',
     'description': 'Manipulate OTTR Reasonable Ontology Templates in Python',
     'fixed_sidebar': True,
-    'github_button': True,
-    'travis_button': True
+    'github_button': True
 }
