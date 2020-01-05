@@ -116,18 +116,34 @@
 <p>Lexer and parser utilities for manipulating OTTR template definitions and instances.</p>
 <dl class="function">
 <dt id="ottr.parsers.parse_templates">
-<code class="sig-prename descclassname">ottr.parsers.</code><code class="sig-name descname">parse_templates</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">format='stottr'</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.parsers.parse_templates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse a set of stOTTR template definitions.
-Use the format parameter to set the language used to decalred templates (default to pOTTR).
-Formats currently supported: stOTTR</p>
+<code class="sig-prename descclassname">ottr.parsers.</code><code class="sig-name descname">parse_templates</code><span class="sig-paren">(</span><em class="sig-param">text: str</em>, <em class="sig-param">format: str = 'stottr'</em><span class="sig-paren">)</span> &#x2192; List[ottr.base.template.AbstractTemplate]<a class="headerlink" href="#ottr.parsers.parse_templates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a set of OTTR template definitions.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>text: Set of OTTR template definitions in text format.</p></li>
+<li><p>format: Format of the input template definitions. Defaults to sOTTR. Supported formats: sOTTR.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><p>The parsed OTTR template definitions.</p>
+</dd>
+</dl>
+<p>Throws: <cite>TypeError</cite> if the input format is not supported.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ottr.parsers.parse_instances">
-<code class="sig-prename descclassname">ottr.parsers.</code><code class="sig-name descname">parse_instances</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">format='stottr'</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.parsers.parse_instances" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse a set of stOTTR template instances.
-Use the format parameter to set the language used to decalred templates (default to pOTTR).
-Formats currently supported: stOTTR</p>
+<code class="sig-prename descclassname">ottr.parsers.</code><code class="sig-name descname">parse_instances</code><span class="sig-paren">(</span><em class="sig-param">text: str</em>, <em class="sig-param">format: str = 'stottr'</em><span class="sig-paren">)</span> &#x2192; List[Dict[str, Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable, List[Tuple[int, Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable]]]]]]<a class="headerlink" href="#ottr.parsers.parse_instances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a set of OTTR template instances.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>text: Set of OTTR instances in text format.</p></li>
+<li><p>format: Format of the input instances. Defaults to sOTTR. Supported formats: sOTTR.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><p>The parsed OTTR template instances.</p>
+</dd>
+</dl>
+<p>Throws: <cite>TypeError</cite> if the input format is not supported.</p>
 </dd></dl>
 
 </div>

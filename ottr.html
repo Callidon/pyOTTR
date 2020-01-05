@@ -140,56 +140,78 @@
 <span id="ottr-generator-module"></span><h2>ottr.generator module<a class="headerlink" href="#module-ottr.generator" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ottr.generator.OttrGenerator">
-<em class="property">class </em><code class="sig-prename descclassname">ottr.generator.</code><code class="sig-name descname">OttrGenerator</code><span class="sig-paren">(</span><em class="sig-param">load_defaults=True</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.generator.OttrGenerator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ottr.generator.</code><code class="sig-name descname">OttrGenerator</code><span class="sig-paren">(</span><em class="sig-param">load_defaults: bool = True</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.generator.OttrGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>An OttrGenerator can load OTTR templates definitions and expand them to produce RDF triples.</p>
-<dl class="method">
-<dt id="ottr.generator.OttrGenerator.instanciate">
-<code class="sig-name descname">instanciate</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">format='stottr'</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.generator.OttrGenerator.instanciate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instance a set of OTTR instances.
-Arguments:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>text <code class="docutils literal notranslate"><span class="pre">str</span></code>: OTTR instances in text format.</p></li>
-<li><p>format <code class="docutils literal notranslate"><span class="pre">str</span></code>: (optional) format of the template definitions. Defaults to sOTTR. Supported formats: sOTTR.</p></li>
+<dl>
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>load_defaults: True if default templates library should be loaded, False otherwise.</p></li>
 </ul>
-</div></blockquote>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>A :class`ottr.generator.OttrInstances`</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">generator</span> <span class="o">=</span> <span class="n">OttrGenerator</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">generator</span><span class="o">.</span><span class="n">load_templates</span><span class="p">(</span><span class="s2">&quot;&lt;http://example.org#Person&gt; [ottr:IRI ?uri, ?firstName] :: { ottr:Triple (?uri, foaf:firstName, ?firstName ) } .&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">generator</span><span class="o">.</span><span class="n">instanciate</span><span class="p">(</span><span class="s1">&#39;&lt;http://example.org#Person&gt;(_:person, &quot;Ann&quot;@en)&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">triple</span> <span class="ow">in</span> <span class="n">instances</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">as_nt</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="nb">print</span><span class="p">(</span><span class="n">triple</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd>
 </dl>
+<dl class="method">
+<dt id="ottr.generator.OttrGenerator.instanciate">
+<code class="sig-name descname">instanciate</code><span class="sig-paren">(</span><em class="sig-param">text: str</em>, <em class="sig-param">format: str = 'stottr'</em><span class="sig-paren">)</span> &#x2192; ottr.generator.OttrInstances<a class="headerlink" href="#ottr.generator.OttrGenerator.instanciate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance a set of OTTR instances.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>text: Set of OTTR instances in text format.</p></li>
+<li><p>format: Format of the input instances. Defaults to sOTTR. Supported formats: sOTTR.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><p>An instance of OttrInstances, that can be executed to generate RDF triples.</p>
+</dd>
+</dl>
+<p>Throws: <cite>TypeError</cite> if the input format is not supported.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ottr.generator.OttrGenerator.load_templates">
-<code class="sig-name descname">load_templates</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">format='stottr'</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.generator.OttrGenerator.load_templates" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load_templates</code><span class="sig-paren">(</span><em class="sig-param">text: str</em>, <em class="sig-param">format: str = 'stottr'</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#ottr.generator.OttrGenerator.load_templates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a set of OTTR template definitions.</p>
 <dl class="simple">
-<dt>Arguments:</dt><dd><ul class="simple">
-<li><p>text <code class="docutils literal notranslate"><span class="pre">str</span></code>: OTTR template definitions in text format.</p></li>
-<li><p>format <code class="docutils literal notranslate"><span class="pre">str</span></code>: (optional) format of the template definitions. Defaults to sOTTR. Supported formats: sOTTR.</p></li>
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>text: Set of OTTR template definitions in text format.</p></li>
+<li><p>format: Format of the input template definitions. Defaults to sOTTR. Supported formats: sOTTR.</p></li>
 </ul>
 </dd>
 </dl>
+<p>Throws: <cite>TypeError</cite> if the input format is not supported.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="ottr.generator.OttrInstances">
-<em class="property">class </em><code class="sig-prename descclassname">ottr.generator.</code><code class="sig-name descname">OttrInstances</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">to_execute</em>, <em class="sig-param">all_templates</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.generator.OttrInstances" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ottr.generator.</code><code class="sig-name descname">OttrInstances</code><span class="sig-paren">(</span><em class="sig-param">exec_id: int, to_execute: List[Tuple[ottr.base.template.AbstractTemplate, Dict[rdflib.term.Variable, Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef]]]], all_templates: Dict[rdflib.term.URIRef, ottr.base.template.AbstractTemplate]</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.generator.OttrInstances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Compiled OTTR instances, ready to be executed to produce RDF triples.</p>
-<dl class="method">
-<dt id="ottr.generator.OttrInstances.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.generator.OttrInstances.execute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Execute the instances to produce RDF triples.</p>
 <dl class="simple">
-<dt>Arguments:</dt><dd><ul class="simple">
-<li><p>as_nt <code class="docutils literal notranslate"><span class="pre">bool</span></code>: (optional) True if the results should be produced in text RDF format, False if they should be produced in RDFlib format.</p></li>
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>exec_id: ID of the execution, used to unify blank nodes generation during template expansion.</p></li>
+<li><p>to_execute: List of tuple (template, instance arguments) to execute.</p></li>
+<li><p>all_templates: Map of all OTTR templates available at execution.</p></li>
 </ul>
 </dd>
-<dt>Returns:</dt><dd><p>A generator that yields 3-tuples of <code class="docutils literal notranslate"><span class="pre">str</span></code> or :class`rdflib.term.Identifier` (depends on the value set for as_nt).</p>
+</dl>
+<dl class="method">
+<dt id="ottr.generator.OttrInstances.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">as_nt: bool = False</em><span class="sig-paren">)</span> &#x2192; Iterable[Tuple[Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef]]]<a class="headerlink" href="#ottr.generator.OttrInstances.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the instances to produce RDF triples.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>as_nt: (optional) True if the results should be produced in n-triples format, False if they should be produced in RDFlib format.</p></li>
+</ul>
+</dd>
+<dt>Yields:</dt><dd><p>RDF triples, in n-triples or rdflib format.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -208,37 +230,51 @@ PEP 544, PEP 586, PEP 589, and PEP 591.</p>
 <p>Manipulate OTTR Reasonable Ontology Templates in Python</p>
 <dl class="class">
 <dt id="ottr.OttrGenerator">
-<em class="property">class </em><code class="sig-prename descclassname">ottr.</code><code class="sig-name descname">OttrGenerator</code><span class="sig-paren">(</span><em class="sig-param">load_defaults=True</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.OttrGenerator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ottr.</code><code class="sig-name descname">OttrGenerator</code><span class="sig-paren">(</span><em class="sig-param">load_defaults: bool = True</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.OttrGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>An OttrGenerator can load OTTR templates definitions and expand them to produce RDF triples.</p>
-<dl class="method">
-<dt id="ottr.OttrGenerator.instanciate">
-<code class="sig-name descname">instanciate</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">format='stottr'</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.OttrGenerator.instanciate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instance a set of OTTR instances.
-Arguments:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>text <code class="docutils literal notranslate"><span class="pre">str</span></code>: OTTR instances in text format.</p></li>
-<li><p>format <code class="docutils literal notranslate"><span class="pre">str</span></code>: (optional) format of the template definitions. Defaults to sOTTR. Supported formats: sOTTR.</p></li>
+<dl>
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>load_defaults: True if default templates library should be loaded, False otherwise.</p></li>
 </ul>
-</div></blockquote>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>A :class`ottr.generator.OttrInstances`</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">generator</span> <span class="o">=</span> <span class="n">OttrGenerator</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">generator</span><span class="o">.</span><span class="n">load_templates</span><span class="p">(</span><span class="s2">&quot;&lt;http://example.org#Person&gt; [ottr:IRI ?uri, ?firstName] :: { ottr:Triple (?uri, foaf:firstName, ?firstName ) } .&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">generator</span><span class="o">.</span><span class="n">instanciate</span><span class="p">(</span><span class="s1">&#39;&lt;http://example.org#Person&gt;(_:person, &quot;Ann&quot;@en)&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">triple</span> <span class="ow">in</span> <span class="n">instances</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">as_nt</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="nb">print</span><span class="p">(</span><span class="n">triple</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd>
 </dl>
+<dl class="method">
+<dt id="ottr.OttrGenerator.instanciate">
+<code class="sig-name descname">instanciate</code><span class="sig-paren">(</span><em class="sig-param">text: str</em>, <em class="sig-param">format: str = 'stottr'</em><span class="sig-paren">)</span> &#x2192; ottr.generator.OttrInstances<a class="headerlink" href="#ottr.OttrGenerator.instanciate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance a set of OTTR instances.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>text: Set of OTTR instances in text format.</p></li>
+<li><p>format: Format of the input instances. Defaults to sOTTR. Supported formats: sOTTR.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><p>An instance of OttrInstances, that can be executed to generate RDF triples.</p>
+</dd>
+</dl>
+<p>Throws: <cite>TypeError</cite> if the input format is not supported.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ottr.OttrGenerator.load_templates">
-<code class="sig-name descname">load_templates</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">format='stottr'</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.OttrGenerator.load_templates" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load_templates</code><span class="sig-paren">(</span><em class="sig-param">text: str</em>, <em class="sig-param">format: str = 'stottr'</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#ottr.OttrGenerator.load_templates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a set of OTTR template definitions.</p>
 <dl class="simple">
-<dt>Arguments:</dt><dd><ul class="simple">
-<li><p>text <code class="docutils literal notranslate"><span class="pre">str</span></code>: OTTR template definitions in text format.</p></li>
-<li><p>format <code class="docutils literal notranslate"><span class="pre">str</span></code>: (optional) format of the template definitions. Defaults to sOTTR. Supported formats: sOTTR.</p></li>
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>text: Set of OTTR template definitions in text format.</p></li>
+<li><p>format: Format of the input template definitions. Defaults to sOTTR. Supported formats: sOTTR.</p></li>
 </ul>
 </dd>
 </dl>
+<p>Throws: <cite>TypeError</cite> if the input format is not supported.</p>
 </dd></dl>
 
 </dd></dl>

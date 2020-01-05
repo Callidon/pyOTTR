@@ -106,20 +106,33 @@
 <span id="ottr-parsers-stottr-lexer-module"></span><h2>ottr.parsers.stottr.lexer module<a class="headerlink" href="#module-ottr.parsers.stottr.lexer" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="ottr.parsers.stottr.lexer.ListOf">
-<code class="sig-prename descclassname">ottr.parsers.stottr.lexer.</code><code class="sig-name descname">ListOf</code><span class="sig-paren">(</span><em class="sig-param">content</em>, <em class="sig-param">start_char='('</em>, <em class="sig-param">end_char=')'</em>, <em class="sig-param">separator='</em>, <em class="sig-param">'</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.parsers.stottr.lexer.ListOf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build a group that matches a list of the same tokens</p>
+<code class="sig-prename descclassname">ottr.parsers.stottr.lexer.</code><code class="sig-name descname">ListOf</code><span class="sig-paren">(</span><em class="sig-param">content: pyparsing.Group</em>, <em class="sig-param">start_char: str = '('</em>, <em class="sig-param">end_char: str = ')'</em>, <em class="sig-param">separator: str = '</em>, <em class="sig-param">'</em><span class="sig-paren">)</span> &#x2192; pyparsing.Group<a class="headerlink" href="#ottr.parsers.stottr.lexer.ListOf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a group that matches a list of the same tokens.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>content: A Group of tokens.</p></li>
+<li><p>start_char: Character at the start of the the list.</p></li>
+<li><p>end_char: Character at the end of the the list.</p></li>
+<li><p>separator: Character used to sperate elements in the list</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="ottr.parsers.stottr.lexer.lex_instances_stottr">
-<code class="sig-prename descclassname">ottr.parsers.stottr.lexer.</code><code class="sig-name descname">lex_instances_stottr</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.parsers.stottr.lexer.lex_instances_stottr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run the lexer on a set of stOTTR instances</p>
+<code class="sig-prename descclassname">ottr.parsers.stottr.lexer.</code><code class="sig-name descname">lex_instances_stottr</code><span class="sig-paren">(</span><em class="sig-param">text: str</em><span class="sig-paren">)</span> &#x2192; pyparsing.Group<a class="headerlink" href="#ottr.parsers.stottr.lexer.lex_instances_stottr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the lexer on a set of stOTTR instances.</p>
+<p>Argument: A set of stOTTR instances as text.</p>
+<p>Returns: The lexed stOTTR instances.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ottr.parsers.stottr.lexer.lex_templates_stottr">
-<code class="sig-prename descclassname">ottr.parsers.stottr.lexer.</code><code class="sig-name descname">lex_templates_stottr</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.parsers.stottr.lexer.lex_templates_stottr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run the lexer on a set of stOTTR template defintions</p>
+<code class="sig-prename descclassname">ottr.parsers.stottr.lexer.</code><code class="sig-name descname">lex_templates_stottr</code><span class="sig-paren">(</span><em class="sig-param">text: str</em><span class="sig-paren">)</span> &#x2192; pyparsing.Group<a class="headerlink" href="#ottr.parsers.stottr.lexer.lex_templates_stottr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the lexer on a set of stOTTR template defintions.</p>
+<p>Argument: A set of stOTTR template defintions as text.</p>
+<p>Returns: The lexed stOTTR template defintions.</p>
 </dd></dl>
 
 </div>
@@ -127,65 +140,60 @@
 <span id="ottr-parsers-stottr-parser-module"></span><h2>ottr.parsers.stottr.parser module<a class="headerlink" href="#module-ottr.parsers.stottr.parser" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="ottr.parsers.stottr.parser.get_default_nsm">
-<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">get_default_nsm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ottr.parsers.stottr.parser.get_default_nsm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get an rdflib NamespaceManager wirh default prefixes configured</p>
+<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">get_default_nsm</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; rdflib.namespace.NamespaceManager<a class="headerlink" href="#ottr.parsers.stottr.parser.get_default_nsm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an rdflib NamespaceManager with default prefixes configured</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ottr.parsers.stottr.parser.parse_instance_arguments">
-<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">parse_instance_arguments</code><span class="sig-paren">(</span><em class="sig-param">template_id</em>, <em class="sig-param">arguments</em>, <em class="sig-param">nsm=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.parsers.stottr.parser.parse_instance_arguments" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">parse_instance_arguments</code><span class="sig-paren">(</span><em class="sig-param">template_id: int, arguments: List[Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable]], nsm: rdflib.namespace.NamespaceManager = None</em><span class="sig-paren">)</span> &#x2192; List[ottr.base.argument.InstanceArgument]<a class="headerlink" href="#ottr.parsers.stottr.parser.parse_instance_arguments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the arguments of a template instance.</p>
 <dl class="simple">
-<dt>Arguments:</dt><dd><ul class="simple">
-<li><p>template_id <code class="docutils literal notranslate"><span class="pre">int</span></code>: ID of the template</p></li>
-<li><p>arguments <code class="docutils literal notranslate"><span class="pre">rdflib.term.Identifier[]</span></code>: instance arguments (RDF terms) to parse</p></li>
-<li><p>nsm :class <cite>rdflib.namespace.NamespaceManager</cite>: (optional) RDFlib namespace manager used to manage prefixes.</p></li>
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>template_id: ID of the template.</p></li>
+<li><p>arguments: instance arguments (RDF terms) to parse.</p></li>
+<li><p>nsm: Namespace manager used to expand prefixed URIs.</p></li>
 </ul>
 </dd>
-<dt>Retuns:</dt><dd><p>A list of :class`ottr.base.InstanceArgument`</p>
+<dt>Retuns:</dt><dd><p>A list of instance arguments.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="ottr.parsers.stottr.parser.parse_instances_stottr">
-<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">parse_instances_stottr</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.parsers.stottr.parser.parse_instances_stottr" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">parse_instances_stottr</code><span class="sig-paren">(</span><em class="sig-param">text: str</em><span class="sig-paren">)</span> &#x2192; List[Dict[str, Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable, List[Tuple[int, Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable]]]]]]<a class="headerlink" href="#ottr.parsers.stottr.parser.parse_instances_stottr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse a set of stOTTR instances and returns them as objects.</p>
-<dl class="simple">
-<dt>Arguments:</dt><dd><ul class="simple">
-<li><p>text <code class="docutils literal notranslate"><span class="pre">str</span></code>: stOTTR instances in text format.</p></li>
-</ul>
-</dd>
-<dt>Returns:</dt><dd><p>A list of instances built from the valid sOTTR instances provided as input.</p>
-</dd>
-</dl>
+<p>The objects returned are expected to be used with the <cite>format_arguments</cite> method of a template.</p>
+<p>Argument: Set of stOTTR instances in text format.</p>
+<p>Returns: A list of instances built from the valid sOTTR instances provided as input.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ottr.parsers.stottr.parser.parse_template_instance">
-<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">parse_template_instance</code><span class="sig-paren">(</span><em class="sig-param">parent_template_id</em>, <em class="sig-param">instance</em>, <em class="sig-param">nsm=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.parsers.stottr.parser.parse_template_instance" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">parse_template_instance</code><span class="sig-paren">(</span><em class="sig-param">parent_template_id: int</em>, <em class="sig-param">instance: pyparsing.Group</em>, <em class="sig-param">nsm: rdflib.namespace.NamespaceManager = None</em><span class="sig-paren">)</span> &#x2192; ottr.base.template.AbstractTemplate<a class="headerlink" href="#ottr.parsers.stottr.parser.parse_template_instance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse a stOTTR template instance.</p>
 <dl class="simple">
 <dt>Arguments:</dt><dd><ul class="simple">
-<li><p>parent_template_id <code class="docutils literal notranslate"><span class="pre">int</span></code>: ID of the template that owns the scope of the instance.</p></li>
-<li><p>instance <code class="docutils literal notranslate"><span class="pre">str[]</span></code>: instance to parse</p></li>
-<li><p>nsm :class`rdflib.namespace.NamespaceManager`: (optional) RDFlib namespace manager used to manage prefixes.</p></li>
+<li><p>parent_template_id: ID of the template that owns the scope of the instance.</p></li>
+<li><p>instance: instance to parse</p></li>
+<li><p>nsm: Namespace manager used to expand prefixed URIs.</p></li>
 </ul>
 </dd>
-<dt>Returns:</dt><dd><p>A :class`ottr.base.AbstractTemplate`</p>
+<dt>Returns:</dt><dd><p>An OTTR template.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="ottr.parsers.stottr.parser.parse_template_parameter">
-<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">parse_template_parameter</code><span class="sig-paren">(</span><em class="sig-param">template_id</em>, <em class="sig-param">param</em>, <em class="sig-param">nsm=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.parsers.stottr.parser.parse_template_parameter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">parse_template_parameter</code><span class="sig-paren">(</span><em class="sig-param">template_id: int</em>, <em class="sig-param">param: pyparsing.Group</em>, <em class="sig-param">nsm: rdflib.namespace.NamespaceManager = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable, bool]]<a class="headerlink" href="#ottr.parsers.stottr.parser.parse_template_parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse an OTTR template parameter.</p>
 <dl class="simple">
-<dt>Arguments:</dt><dd><ul class="simple">
-<li><p>template_id <code class="docutils literal notranslate"><span class="pre">int</span></code>: ID of the template</p></li>
-<li><p>param <code class="docutils literal notranslate"><span class="pre">str[]</span></code>: parameter to parse</p></li>
-<li><p>nsm :class`rdflib.namespace.NamespaceManager`: (optional) RDFlib namespace manager used to manage prefixes.</p></li>
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>template_id: ID of the template.</p></li>
+<li><p>param: Parameters to parse.</p></li>
+<li><p>nsm: Namespace manager used to expand prefixed URIs.</p></li>
 </ul>
 </dd>
 <dt>Returns:</dt><dd><p>A <cite>dict</cite> representation of the parsed template parameter, with fields “name” (:class`rdflib.term.Identifier`), “type” (:class`rdflib.term.URIRef`), “optional” (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) and “nonblank” (<code class="docutils literal notranslate"><span class="pre">bool</span></code>).</p>
@@ -195,48 +203,38 @@
 
 <dl class="function">
 <dt id="ottr.parsers.stottr.parser.parse_templates_stottr">
-<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">parse_templates_stottr</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.parsers.stottr.parser.parse_templates_stottr" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">parse_templates_stottr</code><span class="sig-paren">(</span><em class="sig-param">text: str</em><span class="sig-paren">)</span> &#x2192; List[ottr.base.template.AbstractTemplate]<a class="headerlink" href="#ottr.parsers.stottr.parser.parse_templates_stottr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse a set of stOTTR template definitions and returns the list of all OTTR templates.</p>
-<dl class="simple">
-<dt>Arguments:</dt><dd><ul class="simple">
-<li><p>text <code class="docutils literal notranslate"><span class="pre">str</span></code>: stOTTR template definitions in text format.</p></li>
-</ul>
-</dd>
-<dt>Returns:</dt><dd><p>A list of :class`ottr.base.MainTemplate` built from the valid sOTTR template definitions provided as input.</p>
-</dd>
-</dl>
+<p>Argument: A set of stOTTR template definitions in text format.</p>
+<p>Returns: A list of OTTR templates built from the valid sOTTR template definitions provided as input.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ottr.parsers.stottr.parser.parse_term">
-<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">parse_term</code><span class="sig-paren">(</span><em class="sig-param">term</em>, <em class="sig-param">nsm=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.parsers.stottr.parser.parse_term" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse a RDF Term from text format to rdflib format.</p>
+<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">parse_term</code><span class="sig-paren">(</span><em class="sig-param">term: Union[str, List[str]], nsm: rdflib.namespace.NamespaceManager = None</em><span class="sig-paren">)</span> &#x2192; Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable]<a class="headerlink" href="#ottr.parsers.stottr.parser.parse_term" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a raw RDF term or a list of raw RDF Terms into the rdflib format.</p>
 <dl class="simple">
-<dt>Arguments:</dt><dd><ul class="simple">
-<li><p>term <code class="docutils literal notranslate"><span class="pre">str</span></code>: RDF Term to parse (in text format)</p></li>
-<li><p>nsm :class <cite>rdflib.namespace.NamespaceManager</cite>: (optional) RDFlib namespace manager used to manage prefixes.</p></li>
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>term: (List of) RDF Term(s) to parse (in n-triples format).</p></li>
+<li><p>nsm: Namespace manager used to expand prefixed URIs.</p></li>
 </ul>
+</dd>
+<dt>Returns:</dt><dd><p>The parsed RDF term in rdflib format.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="function">
-<dt id="ottr.parsers.stottr.parser.term_to_rdflib">
-<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">term_to_rdflib</code><span class="sig-paren">(</span><em class="sig-param">term</em>, <em class="sig-param">nsm=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.parsers.stottr.parser.term_to_rdflib" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse a raw RDF term into the rdflib format</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="ottr.parsers.stottr.parser.unify_var">
-<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">unify_var</code><span class="sig-paren">(</span><em class="sig-param">variable</em>, <em class="sig-param">suffix</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.parsers.stottr.parser.unify_var" title="Permalink to this definition">¶</a></dt>
-<dd><p>Makes a :class`rdflib.term.Variable` unique by appending a suffix to it.</p>
+<code class="sig-prename descclassname">ottr.parsers.stottr.parser.</code><code class="sig-name descname">unify_var</code><span class="sig-paren">(</span><em class="sig-param">variable: rdflib.term.Variable, suffix: Union[str, int]</em><span class="sig-paren">)</span> &#x2192; rdflib.term.Variable<a class="headerlink" href="#ottr.parsers.stottr.parser.unify_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a SPARQL Variable unique by appending a suffix to it.</p>
 <dl class="simple">
-<dt>Arguments:</dt><dd><ul class="simple">
-<li><p>value :class`rdflib.term.Variable`: Variable to makes unique</p></li>
-<li><p>suffix <code class="docutils literal notranslate"><span class="pre">number|str</span></code>: suffix to hash &amp; append at the end of the value</p></li>
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>value: Variable to make unique.</p></li>
+<li><p>suffix: suffix to append at the end of the value.</p></li>
 </ul>
 </dd>
-<dt>Returns:</dt><dd><p>A :class`rdflib.term.Variable`</p>
+<dt>Returns:</dt><dd><p>A new SPARQL Variable</p>
 </dd>
 </dl>
 </dd></dl>
