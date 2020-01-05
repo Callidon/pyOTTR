@@ -1,24 +1,29 @@
 # template.py
 # Author: Thomas MINIER - MIT License 2019
 from abc import ABC, abstractmethod
-from rdflib import BNode, Literal, Variable
+from typing import Dict, Iterable, Optional, Tuple, Any, List
+
+from rdflib import BNode, Literal, URIRef, Variable
 from rdflib.namespace import RDFS
+
+from ottr.base.argument import InstanceArgument
+
 from ottr.base.utils import OTTR_IRI, OTTR_NONE
+from ottr.types import BoundedTerm, ExpansionResults, InputBindings
 
 
 class TemplateParameter(object):
-    """
-        The parameter of an OTTR Template.
+    """The parameter of an OTTR Template.
 
-        Arguments:
-            - name ``str``: parameter's name.
-            - param_type :class`rdflib.term.URIRef`: parameter's type.
-            - optional ``bool``: if the parameter is optional or not.
-            - nonblank ``bool``: if the parameter accepts blank node or not.
-            - default :class`rdflib.term.Identifier`: (optional) the parameter's default value if it is set to ottr:None.
+    Args:
+      * name: The parameter's name.
+      * param_type: The parameter's type.
+      * optional: if the parameter is optional or not.
+      * nonblank: if the parameter accepts blank node or not.
+      * default: the parameter's default value if it is set to `ottr:None`.
     """
 
-    def __init__(self, name, param_type, optional, nonblank, default=None):
+    def __init__(self, name: Variable, param_type: str, optional: bool, nonblank: bool, default: BoundedTerm = None):
         super(TemplateParameter, self).__init__()
         self._name = name
         self._param_type = param_type
@@ -30,32 +35,30 @@ class TemplateParameter(object):
             self._optional = True
 
     @property
-    def name(self):
+    def name(self) -> Variable:
         """Get the parameter name, i.e., a SPARQL variable"""
         return self._name
 
-    def __str__(self):
-        res = "{} {}".format(self._param_type.n3(), self._name.n3())
+    def __str__(self) -> str:
+        res = f"{self._param_type.n3()} {self._name.n3()}"
         if self._optional:
             res = "? " + res
         if self._nonblank:
             res = "! " + res
         return res
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
-    def validate(self, value):
-        """
-            Assert that an argument can be used for this parameter, i.e., its value is compatible with the parameter definition (type, optional, non blank, etc).
+    def validate(self, value: BoundedTerm) -> Tuple[bool, Optional[BoundedTerm], Optional[str]]:
+        """Assert that a RDF Term can be used as argument for this parameter, *i.e.*, its value is compatible with the parameter definition (type, optional, non blank, etc).
 
-            Argument:
-                - value :class`rdflib.term.Identifier`: Argument value
-            Returns:
-                A tuple ``(is_valid, value, error_reason)`` where:
-                    - ``is_valid`` is a boolean which indicates the outcome of the validation.
-                    - ``value`` is the RDF value to use for the argument. Set to ``None`` if the validation was not successfull.
-                    - ``error_reason`` is an error message that indicates why the validation has failed. Set to ``None`` if the validation was successfull.
+        Argument: The value to validate.
+
+        Returns: A tuple (`is_valid`, `value`, `error_reason`) where:
+          * `is_valid` is a boolean which indicates the outcome of the validation.
+          * `value` is the RDF value to use for the argument. Set to `None` if the validation was not successfull.
+          * `error_reason` is an error message that indicates why the validation has failed. Set to `None` if the validation was successfull.
         """
         # assert that the argument's type is correct
         if self._param_type != RDFS.Resource:
@@ -78,43 +81,74 @@ class TemplateParameter(object):
 
 
 class AbstractTemplate(ABC):
-    """An abstract OTTR Template."""
+    """An abstract OTTR Template.
 
-    def __init__(self, name):
+    Argument: The template's name as an RDF URI.
+    """
+
+    def __init__(self, name: URIRef):
         super(AbstractTemplate, self).__init__()
         self._name = name
         self._parameters = dict()
 
     @property
-    def name(self):
+    def name(self) -> URIRef:
         return self._name
 
     @abstractmethod
-    def expand(self, arguments, all_templates, as_nt=False):
-        """Returns a generator that expands the template"""
+    def expand(self, arguments: InputBindings, all_templates: Dict[URIRef, Any], bnode_suffix: Tuple[int, int] = (0, 0), as_nt: bool = False) -> Iterable[ExpansionResults]:
+        """Expands the template and yields RDF triples.
+
+        Args:
+          * arguments: Template instantation arguments.
+          * all_templates: Map of all templates known at expansion times.
+          * bnode_suffix: Pair of suffixes used for creating unique blank nodes.
+          * as_nt: True if the RDF triples produced should be in n-triples format, False to use the rdflib format.
+
+        Yields:
+          RDF triples, in rdflib or n-triples format.
+        """
         pass
 
-    def is_base(self):
+    def is_base(self) -> bool:
         """Returns True if the template is a base template, False otherwise"""
         return False
 
-    def add_parameter(self, name, position, param_type=RDFS.Resource, optional=False, nonblank=False, default=None):
-        """
-            Register a new template parameter.
+    def add_parameter(self, name: Variable, position: int, param_type: URIRef = RDFS.Resource, optional: bool = False, nonblank: bool = False, default: BoundedTerm = None) -> None:
+        """Register a new parameter for this template.
 
-            Arguments:
-                - name ``str``: parameter's name.
-                - position ``int``: parameter's position in the template definition.
-                - param_type :class`rdflib.term.URIRef`: (optional) parameter's type. Default is rdfs:Resource.
-                - optional ``bool``: (optional) if the parameter is optional or not. Default is `False`.
-                - nonblank ``bool``: (optional) if the parameter accepts blank node or not. Default is `False`.
-                - default :class`rdflib.term.Identifier`: (optional) the parameter's default value if it is set to ottr:None.
+        Args:
+          * name: The parameter's name.
+          * position: The parameter's position in the template definition.
+          * param_type: The parameter's type (an URI). Defaults to `rdfs:Resource`.
+          * optional: If the parameter is optional or not. Defaults to `False`.
+          * nonblank: If the parameter accepts blank nodes or not. Defaults to `False`.
+          * default: The parameter's default value if it is set to `ottr:None`.
+
+        Example:
+          >>> from rdflib import Literal, URIRref, Variable
+          >>> from rdflib.namespace import Namespace, XSD
+          >>> template.add_parameter(Variable("?uri"), 0, param_type=URIRef("http://ns.ottr.xyz/0.4/IRI"), nonblank=True)
+          >>> template.add_parameter(Variable("?name"), 1, param_type=XSD.string, nonblank=True)
         """
         if position not in self._parameters:
             self._parameters[position] = TemplateParameter(name, param_type, optional, nonblank, default=default)
 
-    def format_arguments(self, arguments):
-        """Format a list of execution arguments, i.e., a list of tuple (position, value), so that they can be used for template expansion"""
+    def format_arguments(self, arguments: List[Tuple[int, BoundedTerm]]) -> Dict[Variable, BoundedTerm]:
+        """Format a list of expansion arguments so that they can be used for template expansion using the `expand()` method.
+
+        Args: List of expansion arguments.
+
+        Returns: Formatted list of expansion arguments, to be used with the expand() method.
+
+        Example:
+          >>> from rdflib import Literal, URIRef
+          >>> from rdflib.namespace import XSD
+          >>> raw_arguments = [ (0, URIRef("http://example.org#Anna")), (1, Literal("Anna")) ]
+          >>> arguments = template.format_arguments(raw_arguments)
+          >>> for triple in template.expand(arguments):
+          >>>   print(triple)
+        """
         args = dict()
         for position, value in arguments:
             if position in self._parameters:
@@ -131,36 +165,68 @@ class AbstractTemplate(ABC):
 
 
 class MainTemplate(AbstractTemplate):
-    """An OTTR template definition, which contains several instances to expand."""
+    """An OTTR template definition, which contains several instances to expand.
 
-    def __init__(self, name, instances):
+    Args:
+      * name: The template name.
+      * instances: Instances declared in the template.
+    """
+
+    def __init__(self, name: URIRef, instances: List[AbstractTemplate]):
         super(MainTemplate, self).__init__(name)
         self._instances = instances
 
-    def __str__(self):
-        return self.name + ":: {\n" + ",\n".join(map(lambda i: str(i), self._instances)) + "} ."
+    def __str__(self) -> str:
+        instances = ',\n'.join(map(lambda i: str(i), self._instances))
+        params = ', '.join(map(lambda i: str(i), self._parameters))
+        return f"{self.name}({params}) :: {{\n {instances} }}."
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
-    def expand(self, arguments, all_templates, bnode_suffix=(0, 0), as_nt=False):
-        """Returns a generator that expands the template"""
+    def expand(self, arguments: InputBindings, all_templates: Dict[URIRef, Any], bnode_suffix: Tuple[int, int] = (0, 0), as_nt: bool = False) -> Iterable[ExpansionResults]:
+        """Expands the template and yields RDF triples.
+
+        Args:
+          * arguments: Template instantation arguments.
+          * all_templates: Map of all templates known at expansion times.
+          * bnode_suffix: Pair of suffixes used for creating unique blank nodes.
+          * as_nt: True if the RDF triples produced should be in n-triples format, False to use the rdflib format.
+
+        Yields:
+          RDF triples, in rdflib or n-triples format.
+        """
         for instance in self._instances:
             yield from instance.expand(arguments, all_templates, bnode_suffix=bnode_suffix, as_nt=as_nt)
 
 
 class NonBaseInstance(AbstractTemplate):
-    """
-        A non-base OTTR Template instance.
+    """A non-base OTTR Template instance.
+
+    Args:
+      * name: The template name.
+      * instance_arguments: Arguments of the template.
     """
 
-    def __init__(self, name, instance_arguments):
+    def __init__(self, name: URIRef, instance_arguments: List[InstanceArgument]):
         super(NonBaseInstance, self).__init__(name)
         # store bound & unbound instance arguments separately
         self._bound_arguments = [(x.position, x.value) for x in instance_arguments if x.is_bound]
         self._unbound_arguments = [(x.position, x.value) for x in instance_arguments if not x.is_bound]
 
-    def expand(self, arguments, all_templates, bnode_suffix=(0, 0), as_nt=False):
+    def expand(self, arguments: InputBindings, all_templates: Dict[URIRef, Any], bnode_suffix: Tuple[int, int] = (0, 0), as_nt: bool = False) -> Iterable[ExpansionResults]:
+        """Expands the template and yields RDF triples.
+
+        Args:
+          * arguments: Template instantation arguments.
+          * all_templates: Map of all templates known at expansion times.
+          * bnode_suffix: Pair of suffixes used for creating unique blank nodes.
+          * as_nt: True if the RDF triples produced should be in n-triples format, False to use the rdflib format.
+
+        Yields: RDF triples, in rdflib or n-triples format.
+
+        Throws: `Exception` when an undefined OTTR template is encountered.
+        """
         # increment the bnode unique prefixes, used to unify blank node acrros instance expansions
         bnode_suffix = (bnode_suffix[0], bnode_suffix[1] + 1)
         if self._name in all_templates:
