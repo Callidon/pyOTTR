@@ -1,13 +1,12 @@
 # template.py
 # Author: Thomas MINIER - MIT License 2019
 from abc import ABC, abstractmethod
-from typing import Dict, Iterable, Optional, Tuple, Any, List
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from rdflib import BNode, Literal, URIRef, Variable
 from rdflib.namespace import RDFS
 
 from ottr.base.argument import InstanceArgument
-
 from ottr.base.utils import OTTR_IRI, OTTR_NONE
 from ottr.types import BoundedTerm, ExpansionResults, InputBindings
 

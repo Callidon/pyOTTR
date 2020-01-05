@@ -21,6 +21,14 @@ ottr.generator module
    :undoc-members:
    :show-inheritance:
 
+ottr.types module
+-----------------
+
+.. automodule:: ottr.types
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Module contents
 ---------------

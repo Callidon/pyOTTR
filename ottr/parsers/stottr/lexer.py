@@ -4,8 +4,15 @@ import re
 from pyparsing import CaselessKeyword, Keyword, LineEnd, Literal, MatchFirst, OneOrMore, Optional, Group, Regex, ZeroOrMore
 
 
-def ListOf(content, start_char="(", end_char=")", separator=","):
-    """Build a group that matches a list of the same tokens"""
+def ListOf(content: Group, start_char: str = "(", end_char: str = ")", separator: str = ",") -> Group:
+    """Build a group that matches a list of the same tokens.
+
+    Args:
+      * content: A Group of tokens.
+      * start_char: Character at the start of the the list.
+      * end_char: Character at the end of the the list.
+      * separator: Character used to sperate elements in the list
+    """
     # list_content = MatchFirst([
     #     content,
     #     content + Optional(Literal(separator)).suppress()
@@ -155,11 +162,21 @@ ottrRoot = ZeroOrMore(prefixDeclaration + LineEnd().suppress()).setResultsName('
 ottrRootInstances = ZeroOrMore(prefixDeclaration + LineEnd().suppress()).setResultsName('prefixes') + OneOrMore(concreteInstance + Keyword('.').suppress() + Optional(LineEnd()).suppress()).setResultsName('instances')
 
 
-def lex_templates_stottr(text):
-    """Run the lexer on a set of stOTTR template defintions"""
+def lex_templates_stottr(text: str) -> Group:
+    """Run the lexer on a set of stOTTR template defintions.
+
+    Argument: A set of stOTTR template defintions as text.
+
+    Returns: The lexed stOTTR template defintions.
+    """
     return ottrRoot.parseString(text)
 
 
-def lex_instances_stottr(text):
-    """Run the lexer on a set of stOTTR instances"""
+def lex_instances_stottr(text: str) -> Group:
+    """Run the lexer on a set of stOTTR instances.
+
+    Argument: A set of stOTTR instances as text.
+
+    Returns: The lexed stOTTR instances.
+    """
     return ottrRootInstances.parseString(text)
