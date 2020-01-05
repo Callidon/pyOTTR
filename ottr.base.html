@@ -52,6 +52,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="ottr.html#subpackages">Subpackages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ottr.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ottr.html#module-ottr.generator">ottr.generator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ottr.html#module-ottr.types">ottr.types module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ottr.html#module-ottr">Module contents</a></li>
 </ul>
 </li>
@@ -103,69 +104,128 @@
 <span id="ottr-base-argument-module"></span><h2>ottr.base.argument module<a class="headerlink" href="#module-ottr.base.argument" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ottr.base.argument.ConcreteArgument">
-<em class="property">class </em><code class="sig-prename descclassname">ottr.base.argument.</code><code class="sig-name descname">ConcreteArgument</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">position</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.ConcreteArgument" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.argument.</code><code class="sig-name descname">ConcreteArgument</code><span class="sig-paren">(</span><em class="sig-param">value: Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable], position: int</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.ConcreteArgument" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ottr.base.argument.InstanceArgument" title="ottr.base.argument.InstanceArgument"><code class="xref py py-class docutils literal notranslate"><span class="pre">ottr.base.argument.InstanceArgument</span></code></a></p>
 <p>An argument that evaluates to a constant RDF term, i.e., a RDF term.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>value: Argument’s value.</p></li>
+<li><p>position: Argument’s position in the template’s parameters list.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt id="ottr.base.argument.ConcreteArgument.evaluate">
-<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">bindings={}</em>, <em class="sig-param">bnode_suffix=(0</em>, <em class="sig-param">0)</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.ConcreteArgument.evaluate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate the argument using an optional set of bindings</p>
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">bindings: Dict[rdflib.term.Variable</em>, <em class="sig-param">Union[rdflib.term.BNode</em>, <em class="sig-param">rdflib.term.Literal</em>, <em class="sig-param">rdflib.term.URIRef</em>, <em class="sig-param">rdflib.term.Variable</em>, <em class="sig-param">List[Union[rdflib.term.BNode</em>, <em class="sig-param">rdflib.term.Literal</em>, <em class="sig-param">rdflib.term.URIRef</em>, <em class="sig-param">rdflib.term.Variable]]]] = {}</em>, <em class="sig-param">bnode_suffix: Tuple[int</em>, <em class="sig-param">int] = (0</em>, <em class="sig-param">0)</em>, <em class="sig-param">as_nt: bool = False</em><span class="sig-paren">)</span> &#x2192; Iterable[Union[Tuple[Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef]], Tuple[str, str, str]]]<a class="headerlink" href="#ottr.base.argument.ConcreteArgument.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the argument using an optional set of bindings.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>bindings: set of bindings used for evaluation.</p></li>
+<li><p>bnode_suffix: Pair of suffixes used for creating unique blank nodes.</p></li>
+<li><p>as_nt: True if the RDF triples produced should be in n-triples format, False to use the rdflib format.</p></li>
+</ul>
+</dd>
+<dt>Yields:</dt><dd><p>RDF triples, in rdflib or n-triples format.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="ottr.base.argument.ConcreteArgument.is_bound">
 <em class="property">property </em><code class="sig-name descname">is_bound</code><a class="headerlink" href="#ottr.base.argument.ConcreteArgument.is_bound" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if the argument is bound, False otherwise</p>
+<dd><p>Return True if the argument is bound (it is not a Variable), False otherwise</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="ottr.base.argument.InstanceArgument">
-<em class="property">class </em><code class="sig-prename descclassname">ottr.base.argument.</code><code class="sig-name descname">InstanceArgument</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">position</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.InstanceArgument" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.argument.</code><code class="sig-name descname">InstanceArgument</code><span class="sig-paren">(</span><em class="sig-param">value: Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable], position: int</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.InstanceArgument" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<p>An instance argument, which corresponds to
-the parameter of a template.</p>
+<p>An abstract instance argument, which corresponds to the parameter of a template.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>value: Argument’s value.</p></li>
+<li><p>position: Argument’s position in the template’s parameters list.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt id="ottr.base.argument.InstanceArgument.evaluate">
-<em class="property">abstract </em><code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">bindings={}</em>, <em class="sig-param">bnode_suffix=0</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.InstanceArgument.evaluate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate the argument using an optional set of bindings</p>
+<em class="property">abstract </em><code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">bindings: Dict[rdflib.term.Variable</em>, <em class="sig-param">Union[rdflib.term.BNode</em>, <em class="sig-param">rdflib.term.Literal</em>, <em class="sig-param">rdflib.term.URIRef</em>, <em class="sig-param">rdflib.term.Variable</em>, <em class="sig-param">List[Union[rdflib.term.BNode</em>, <em class="sig-param">rdflib.term.Literal</em>, <em class="sig-param">rdflib.term.URIRef</em>, <em class="sig-param">rdflib.term.Variable]]]] = {}</em>, <em class="sig-param">bnode_suffix: Tuple[int</em>, <em class="sig-param">int] = (0</em>, <em class="sig-param">0)</em>, <em class="sig-param">as_nt: bool = False</em><span class="sig-paren">)</span> &#x2192; Iterable[Union[Tuple[Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef]], Tuple[str, str, str]]]<a class="headerlink" href="#ottr.base.argument.InstanceArgument.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the argument using an optional set of bindings.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>bindings: set of bindings used for evaluation.</p></li>
+<li><p>bnode_suffix: Pair of suffixes used for creating unique blank nodes.</p></li>
+<li><p>as_nt: True if the RDF triples produced should be in n-triples format, False to use the rdflib format.</p></li>
+</ul>
+</dd>
+<dt>Yields:</dt><dd><p>RDF triples, in rdflib or n-triples format.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="ottr.base.argument.InstanceArgument.is_bound">
 <em class="property">property </em><code class="sig-name descname">is_bound</code><a class="headerlink" href="#ottr.base.argument.InstanceArgument.is_bound" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if the argument is bound, False otherwise</p>
+<dd><p>Return True if the argument is bound (it is not a Variable), False otherwise</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ottr.base.argument.InstanceArgument.position">
 <em class="property">property </em><code class="sig-name descname">position</code><a class="headerlink" href="#ottr.base.argument.InstanceArgument.position" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The argument’s position in the template’s parameters list</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="ottr.base.argument.InstanceArgument.value">
 <em class="property">property </em><code class="sig-name descname">value</code><a class="headerlink" href="#ottr.base.argument.InstanceArgument.value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The argument’s value</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="ottr.base.argument.URIArgument">
-<em class="property">class </em><code class="sig-prename descclassname">ottr.base.argument.</code><code class="sig-name descname">URIArgument</code><span class="sig-paren">(</span><em class="sig-param">uri</em>, <em class="sig-param">position</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.URIArgument" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.argument.</code><code class="sig-name descname">URIArgument</code><span class="sig-paren">(</span><em class="sig-param">uri: rdflib.term.URIRef</em>, <em class="sig-param">position: int</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.URIArgument" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ottr.base.argument.ConcreteArgument" title="ottr.base.argument.ConcreteArgument"><code class="xref py py-class docutils literal notranslate"><span class="pre">ottr.base.argument.ConcreteArgument</span></code></a></p>
-<p>A ConcreteArgument that evaluates to an URI</p>
+<p>A ConcreteArgument that always evaluates to an URI.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>value: Argument’s value (an URI).</p></li>
+<li><p>position: Argument’s position in the template’s parameters list.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="ottr.base.argument.VariableArgument">
-<em class="property">class </em><code class="sig-prename descclassname">ottr.base.argument.</code><code class="sig-name descname">VariableArgument</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">position</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.VariableArgument" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.argument.</code><code class="sig-name descname">VariableArgument</code><span class="sig-paren">(</span><em class="sig-param">value: Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable], position: int</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.VariableArgument" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ottr.base.argument.InstanceArgument" title="ottr.base.argument.InstanceArgument"><code class="xref py py-class docutils literal notranslate"><span class="pre">ottr.base.argument.InstanceArgument</span></code></a></p>
-<p>A variable argument, i.e., a SPARQL variable</p>
+<p>A variable argument, i.e., a SPARQL variable.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>value: Argument’s value (a SPARQL variable).</p></li>
+<li><p>position: Argument’s position in the template’s parameters list.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt id="ottr.base.argument.VariableArgument.evaluate">
-<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">bindings={}</em>, <em class="sig-param">bnode_suffix=(0</em>, <em class="sig-param">0)</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.argument.VariableArgument.evaluate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate the argument using an optional set of bindings</p>
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">bindings: Dict[rdflib.term.Variable</em>, <em class="sig-param">Union[rdflib.term.BNode</em>, <em class="sig-param">rdflib.term.Literal</em>, <em class="sig-param">rdflib.term.URIRef</em>, <em class="sig-param">rdflib.term.Variable</em>, <em class="sig-param">List[Union[rdflib.term.BNode</em>, <em class="sig-param">rdflib.term.Literal</em>, <em class="sig-param">rdflib.term.URIRef</em>, <em class="sig-param">rdflib.term.Variable]]]] = {}</em>, <em class="sig-param">bnode_suffix: Tuple[int</em>, <em class="sig-param">int] = (0</em>, <em class="sig-param">0)</em>, <em class="sig-param">as_nt: bool = False</em><span class="sig-paren">)</span> &#x2192; Iterable[Union[Tuple[Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef]], Tuple[str, str, str]]]<a class="headerlink" href="#ottr.base.argument.VariableArgument.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the argument using an optional set of bindings.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>bindings: set of bindings used for evaluation.</p></li>
+<li><p>bnode_suffix: Pair of suffixes used for creating unique blank nodes.</p></li>
+<li><p>as_nt: True if the RDF triples produced should be in n-triples format, False to use the rdflib format.</p></li>
+</ul>
+</dd>
+<dt>Yields:</dt><dd><p>RDF triples, in rdflib or n-triples format.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -175,18 +235,37 @@ the parameter of a template.</p>
 <span id="ottr-base-base-templates-module"></span><h2>ottr.base.base_templates module<a class="headerlink" href="#module-ottr.base.base_templates" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ottr.base.base_templates.OttrTriple">
-<em class="property">class </em><code class="sig-prename descclassname">ottr.base.base_templates.</code><code class="sig-name descname">OttrTriple</code><span class="sig-paren">(</span><em class="sig-param">subject_arg</em>, <em class="sig-param">predicate_arg</em>, <em class="sig-param">object_arg</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.base_templates.OttrTriple" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.base_templates.</code><code class="sig-name descname">OttrTriple</code><span class="sig-paren">(</span><em class="sig-param">subject_arg: ottr.base.argument.InstanceArgument</em>, <em class="sig-param">predicate_arg: ottr.base.argument.InstanceArgument</em>, <em class="sig-param">object_arg: ottr.base.argument.InstanceArgument</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.base_templates.OttrTriple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ottr.base.template.AbstractTemplate" title="ottr.base.template.AbstractTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ottr.base.template.AbstractTemplate</span></code></a></p>
-<p>The default ottr:Triple base template.</p>
+<p>The default ottr:Triple base template, which expand to a RDF triple.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>subject_arg: Subject argument of the template instance.</p></li>
+<li><p>predicate_arg: Predicate argument of the template instance.</p></li>
+<li><p>object_arg: Object argument of the template instance.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt id="ottr.base.base_templates.OttrTriple.expand">
-<code class="sig-name descname">expand</code><span class="sig-paren">(</span><em class="sig-param">arguments</em>, <em class="sig-param">all_templates</em>, <em class="sig-param">bnode_suffix=(0</em>, <em class="sig-param">0)</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.base_templates.OttrTriple.expand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a generator that expands the template</p>
+<code class="sig-name descname">expand</code><span class="sig-paren">(</span><em class="sig-param">arguments: Dict[rdflib.term.Variable, Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable, List[Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable]]]], all_templates: Dict[rdflib.term.URIRef, ottr.base.template.AbstractTemplate], bnode_suffix: Tuple[int, int] = (0, 0), as_nt: bool = False</em><span class="sig-paren">)</span> &#x2192; Iterable[Union[Tuple[Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef]], Tuple[str, str, str]]]<a class="headerlink" href="#ottr.base.base_templates.OttrTriple.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expands the template and yields a single RDF triple.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>arguments: Template instantation arguments.</p></li>
+<li><p>all_templates: Map of all templates known at expansion times.</p></li>
+<li><p>bnode_suffix: Pair of suffixes used for creating unique blank nodes.</p></li>
+<li><p>as_nt: True if the RDF triples produced should be in n-triples format, False to use the rdflib format.</p></li>
+</ul>
+</dd>
+<dt>Yields:</dt><dd><p>A RDF triple, in rdflib or n-triples format.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="ottr.base.base_templates.OttrTriple.is_base">
-<code class="sig-name descname">is_base</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.base_templates.OttrTriple.is_base" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_base</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#ottr.base.base_templates.OttrTriple.is_base" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if the template is a base template, False otherwise</p>
 </dd></dl>
 
@@ -197,13 +276,32 @@ the parameter of a template.</p>
 <span id="ottr-base-expansion-module"></span><h2>ottr.base.expansion module<a class="headerlink" href="#module-ottr.base.expansion" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ottr.base.expansion.CrossTemplate">
-<em class="property">class </em><code class="sig-prename descclassname">ottr.base.expansion.</code><code class="sig-name descname">CrossTemplate</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">instance</em>, <em class="sig-param">cross_variable</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.expansion.CrossTemplate" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.expansion.</code><code class="sig-name descname">CrossTemplate</code><span class="sig-paren">(</span><em class="sig-param">name: rdflib.term.URIRef</em>, <em class="sig-param">instance: ottr.base.template.AbstractTemplate</em>, <em class="sig-param">cross_variable: rdflib.term.Variable</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.expansion.CrossTemplate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ottr.base.template.AbstractTemplate" title="ottr.base.template.AbstractTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ottr.base.template.AbstractTemplate</span></code></a></p>
 <p>A CrossTemplate expands a template instance using the ‘cross’ expansion mode.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>name: Template’s name.</p></li>
+<li><p>instance: Template instance to expand with the ‘cross’ expansion mode.</p></li>
+<li><p>cross_variable: Variable which binds to the list of arguments for the cross-operator.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt id="ottr.base.expansion.CrossTemplate.expand">
-<code class="sig-name descname">expand</code><span class="sig-paren">(</span><em class="sig-param">arguments</em>, <em class="sig-param">all_templates</em>, <em class="sig-param">bnode_suffix=(0</em>, <em class="sig-param">0)</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.expansion.CrossTemplate.expand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a generator that expands the template</p>
+<code class="sig-name descname">expand</code><span class="sig-paren">(</span><em class="sig-param">arguments: Dict[rdflib.term.Variable, Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable, List[Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable]]]], all_templates: Dict[rdflib.term.URIRef, ottr.base.template.AbstractTemplate], bnode_suffix: Tuple[int, int] = (0, 0), as_nt: bool = False</em><span class="sig-paren">)</span> &#x2192; Iterable[Union[Tuple[Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef]], Tuple[str, str, str]]]<a class="headerlink" href="#ottr.base.expansion.CrossTemplate.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expands the template and yields RDF triples.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>arguments: Template instantation arguments.</p></li>
+<li><p>all_templates: Map of all templates known at expansion times.</p></li>
+<li><p>bnode_suffix: Pair of suffixes used for creating unique blank nodes.</p></li>
+<li><p>as_nt: True if the RDF triples produced should be in n-triples format, False to use the rdflib format.</p></li>
+</ul>
+</dd>
+<dt>Yields:</dt><dd><p>RDF triples, in rdflib or n-triples format.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -213,41 +311,73 @@ the parameter of a template.</p>
 <span id="ottr-base-template-module"></span><h2>ottr.base.template module<a class="headerlink" href="#module-ottr.base.template" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ottr.base.template.AbstractTemplate">
-<em class="property">class </em><code class="sig-prename descclassname">ottr.base.template.</code><code class="sig-name descname">AbstractTemplate</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.AbstractTemplate" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.template.</code><code class="sig-name descname">AbstractTemplate</code><span class="sig-paren">(</span><em class="sig-param">name: rdflib.term.URIRef</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.AbstractTemplate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>An abstract OTTR Template.</p>
+<p>Argument: The template’s name as an RDF URI.</p>
 <dl class="method">
 <dt id="ottr.base.template.AbstractTemplate.add_parameter">
-<code class="sig-name descname">add_parameter</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">position</em>, <em class="sig-param">param_type=rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#Resource')</em>, <em class="sig-param">optional=False</em>, <em class="sig-param">nonblank=False</em>, <em class="sig-param">default=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.AbstractTemplate.add_parameter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Register a new template parameter.</p>
-<dl class="simple">
-<dt>Arguments:</dt><dd><ul class="simple">
-<li><p>name <code class="docutils literal notranslate"><span class="pre">str</span></code>: parameter’s name.</p></li>
-<li><p>position <code class="docutils literal notranslate"><span class="pre">int</span></code>: parameter’s position in the template definition.</p></li>
-<li><p>param_type :class`rdflib.term.URIRef`: (optional) parameter’s type. Default is rdfs:Resource.</p></li>
-<li><p>optional <code class="docutils literal notranslate"><span class="pre">bool</span></code>: (optional) if the parameter is optional or not. Default is <cite>False</cite>.</p></li>
-<li><p>nonblank <code class="docutils literal notranslate"><span class="pre">bool</span></code>: (optional) if the parameter accepts blank node or not. Default is <cite>False</cite>.</p></li>
-<li><p>default :class`rdflib.term.Identifier`: (optional) the parameter’s default value if it is set to ottr:None.</p></li>
+<code class="sig-name descname">add_parameter</code><span class="sig-paren">(</span><em class="sig-param">name: rdflib.term.Variable</em>, <em class="sig-param">position: int</em>, <em class="sig-param">param_type: rdflib.term.URIRef = rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#Resource')</em>, <em class="sig-param">optional: bool = False</em>, <em class="sig-param">nonblank: bool = False</em>, <em class="sig-param">default: Union[rdflib.term.BNode</em>, <em class="sig-param">rdflib.term.Literal</em>, <em class="sig-param">rdflib.term.URIRef] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#ottr.base.template.AbstractTemplate.add_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a new parameter for this template.</p>
+<dl>
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>name: The parameter’s name.</p></li>
+<li><p>position: The parameter’s position in the template definition.</p></li>
+<li><p>param_type: The parameter’s type (an URI). Defaults to <cite>rdfs:Resource</cite>.</p></li>
+<li><p>optional: If the parameter is optional or not. Defaults to <cite>False</cite>.</p></li>
+<li><p>nonblank: If the parameter accepts blank nodes or not. Defaults to <cite>False</cite>.</p></li>
+<li><p>default: The parameter’s default value if it is set to <cite>ottr:None</cite>.</p></li>
 </ul>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">URIRref</span><span class="p">,</span> <span class="n">Variable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdflib.namespace</span> <span class="kn">import</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">XSD</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">template</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="s2">&quot;?uri&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">param_type</span><span class="o">=</span><span class="n">URIRef</span><span class="p">(</span><span class="s2">&quot;http://ns.ottr.xyz/0.4/IRI&quot;</span><span class="p">),</span> <span class="n">nonblank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">template</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="s2">&quot;?name&quot;</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">param_type</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">string</span><span class="p">,</span> <span class="n">nonblank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="ottr.base.template.AbstractTemplate.expand">
-<em class="property">abstract </em><code class="sig-name descname">expand</code><span class="sig-paren">(</span><em class="sig-param">arguments</em>, <em class="sig-param">all_templates</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.AbstractTemplate.expand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a generator that expands the template</p>
+<em class="property">abstract </em><code class="sig-name descname">expand</code><span class="sig-paren">(</span><em class="sig-param">arguments: Dict[rdflib.term.Variable, Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable, List[Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable]]]], all_templates: Dict[rdflib.term.URIRef, Any], bnode_suffix: Tuple[int, int] = (0, 0), as_nt: bool = False</em><span class="sig-paren">)</span> &#x2192; Iterable[Union[Tuple[Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef]], Tuple[str, str, str]]]<a class="headerlink" href="#ottr.base.template.AbstractTemplate.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expands the template and yields RDF triples.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>arguments: Template instantation arguments.</p></li>
+<li><p>all_templates: Map of all templates known at expansion times.</p></li>
+<li><p>bnode_suffix: Pair of suffixes used for creating unique blank nodes.</p></li>
+<li><p>as_nt: True if the RDF triples produced should be in n-triples format, False to use the rdflib format.</p></li>
+</ul>
+</dd>
+<dt>Yields:</dt><dd><p>RDF triples, in rdflib or n-triples format.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="ottr.base.template.AbstractTemplate.format_arguments">
-<code class="sig-name descname">format_arguments</code><span class="sig-paren">(</span><em class="sig-param">arguments</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.AbstractTemplate.format_arguments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Format a list of execution arguments, i.e., a list of tuple (position, value), so that they can be used for template expansion</p>
+<code class="sig-name descname">format_arguments</code><span class="sig-paren">(</span><em class="sig-param">arguments: List[Tuple[int, Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef]]]</em><span class="sig-paren">)</span> &#x2192; Dict[rdflib.term.Variable, Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef]]<a class="headerlink" href="#ottr.base.template.AbstractTemplate.format_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format a list of expansion arguments so that they can be used for template expansion using the <cite>expand()</cite> method.</p>
+<p>Args: List of expansion arguments.</p>
+<p>Returns: Formatted list of expansion arguments, to be used with the expand() method.</p>
+<dl>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">URIRef</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdflib.namespace</span> <span class="kn">import</span> <span class="n">XSD</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">raw_arguments</span> <span class="o">=</span> <span class="p">[</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">(</span><span class="s2">&quot;http://example.org#Anna&quot;</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;Anna&quot;</span><span class="p">))</span> <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arguments</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">format_arguments</span><span class="p">(</span><span class="n">raw_arguments</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">triple</span> <span class="ow">in</span> <span class="n">template</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">arguments</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="nb">print</span><span class="p">(</span><span class="n">triple</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="ottr.base.template.AbstractTemplate.is_base">
-<code class="sig-name descname">is_base</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.AbstractTemplate.is_base" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_base</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#ottr.base.template.AbstractTemplate.is_base" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if the template is a base template, False otherwise</p>
 </dd></dl>
 
@@ -260,42 +390,78 @@ the parameter of a template.</p>
 
 <dl class="class">
 <dt id="ottr.base.template.MainTemplate">
-<em class="property">class </em><code class="sig-prename descclassname">ottr.base.template.</code><code class="sig-name descname">MainTemplate</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">instances</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.MainTemplate" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.template.</code><code class="sig-name descname">MainTemplate</code><span class="sig-paren">(</span><em class="sig-param">name: rdflib.term.URIRef, instances: List[ottr.base.template.AbstractTemplate]</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.MainTemplate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ottr.base.template.AbstractTemplate" title="ottr.base.template.AbstractTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ottr.base.template.AbstractTemplate</span></code></a></p>
 <p>An OTTR template definition, which contains several instances to expand.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>name: The template name.</p></li>
+<li><p>instances: Instances declared in the template.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt id="ottr.base.template.MainTemplate.expand">
-<code class="sig-name descname">expand</code><span class="sig-paren">(</span><em class="sig-param">arguments</em>, <em class="sig-param">all_templates</em>, <em class="sig-param">bnode_suffix=(0</em>, <em class="sig-param">0)</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.MainTemplate.expand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a generator that expands the template</p>
+<code class="sig-name descname">expand</code><span class="sig-paren">(</span><em class="sig-param">arguments: Dict[rdflib.term.Variable, Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable, List[Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable]]]], all_templates: Dict[rdflib.term.URIRef, Any], bnode_suffix: Tuple[int, int] = (0, 0), as_nt: bool = False</em><span class="sig-paren">)</span> &#x2192; Iterable[Union[Tuple[Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef]], Tuple[str, str, str]]]<a class="headerlink" href="#ottr.base.template.MainTemplate.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expands the template and yields RDF triples.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>arguments: Template instantation arguments.</p></li>
+<li><p>all_templates: Map of all templates known at expansion times.</p></li>
+<li><p>bnode_suffix: Pair of suffixes used for creating unique blank nodes.</p></li>
+<li><p>as_nt: True if the RDF triples produced should be in n-triples format, False to use the rdflib format.</p></li>
+</ul>
+</dd>
+<dt>Yields:</dt><dd><p>RDF triples, in rdflib or n-triples format.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="ottr.base.template.NonBaseInstance">
-<em class="property">class </em><code class="sig-prename descclassname">ottr.base.template.</code><code class="sig-name descname">NonBaseInstance</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">instance_arguments</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.NonBaseInstance" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.template.</code><code class="sig-name descname">NonBaseInstance</code><span class="sig-paren">(</span><em class="sig-param">name: rdflib.term.URIRef, instance_arguments: List[ottr.base.argument.InstanceArgument]</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.NonBaseInstance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ottr.base.template.AbstractTemplate" title="ottr.base.template.AbstractTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ottr.base.template.AbstractTemplate</span></code></a></p>
 <p>A non-base OTTR Template instance.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>name: The template name.</p></li>
+<li><p>instance_arguments: Arguments of the template.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt id="ottr.base.template.NonBaseInstance.expand">
-<code class="sig-name descname">expand</code><span class="sig-paren">(</span><em class="sig-param">arguments</em>, <em class="sig-param">all_templates</em>, <em class="sig-param">bnode_suffix=(0</em>, <em class="sig-param">0)</em>, <em class="sig-param">as_nt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.NonBaseInstance.expand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a generator that expands the template</p>
+<code class="sig-name descname">expand</code><span class="sig-paren">(</span><em class="sig-param">arguments: Dict[rdflib.term.Variable, Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable, List[Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, rdflib.term.Variable]]]], all_templates: Dict[rdflib.term.URIRef, Any], bnode_suffix: Tuple[int, int] = (0, 0), as_nt: bool = False</em><span class="sig-paren">)</span> &#x2192; Iterable[Union[Tuple[Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef], Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef]], Tuple[str, str, str]]]<a class="headerlink" href="#ottr.base.template.NonBaseInstance.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expands the template and yields RDF triples.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>arguments: Template instantation arguments.</p></li>
+<li><p>all_templates: Map of all templates known at expansion times.</p></li>
+<li><p>bnode_suffix: Pair of suffixes used for creating unique blank nodes.</p></li>
+<li><p>as_nt: True if the RDF triples produced should be in n-triples format, False to use the rdflib format.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Yields: RDF triples, in rdflib or n-triples format.</p>
+<p>Throws: <cite>Exception</cite> when an undefined OTTR template is encountered.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="ottr.base.template.TemplateParameter">
-<em class="property">class </em><code class="sig-prename descclassname">ottr.base.template.</code><code class="sig-name descname">TemplateParameter</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">param_type</em>, <em class="sig-param">optional</em>, <em class="sig-param">nonblank</em>, <em class="sig-param">default=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.TemplateParameter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ottr.base.template.</code><code class="sig-name descname">TemplateParameter</code><span class="sig-paren">(</span><em class="sig-param">name: rdflib.term.Variable</em>, <em class="sig-param">param_type: str</em>, <em class="sig-param">optional: bool</em>, <em class="sig-param">nonblank: bool</em>, <em class="sig-param">default: Union[rdflib.term.BNode</em>, <em class="sig-param">rdflib.term.Literal</em>, <em class="sig-param">rdflib.term.URIRef] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.TemplateParameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>The parameter of an OTTR Template.</p>
 <dl class="simple">
-<dt>Arguments:</dt><dd><ul class="simple">
-<li><p>name <code class="docutils literal notranslate"><span class="pre">str</span></code>: parameter’s name.</p></li>
-<li><p>param_type :class`rdflib.term.URIRef`: parameter’s type.</p></li>
-<li><p>optional <code class="docutils literal notranslate"><span class="pre">bool</span></code>: if the parameter is optional or not.</p></li>
-<li><p>nonblank <code class="docutils literal notranslate"><span class="pre">bool</span></code>: if the parameter accepts blank node or not.</p></li>
-<li><p>default :class`rdflib.term.Identifier`: (optional) the parameter’s default value if it is set to ottr:None.</p></li>
+<dt>Args:</dt><dd><ul class="simple">
+<li><p>name: The parameter’s name.</p></li>
+<li><p>param_type: The parameter’s type.</p></li>
+<li><p>optional: if the parameter is optional or not.</p></li>
+<li><p>nonblank: if the parameter accepts blank node or not.</p></li>
+<li><p>default: the parameter’s default value if it is set to <cite>ottr:None</cite>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -307,21 +473,15 @@ the parameter of a template.</p>
 
 <dl class="method">
 <dt id="ottr.base.template.TemplateParameter.validate">
-<code class="sig-name descname">validate</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#ottr.base.template.TemplateParameter.validate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Assert that an argument can be used for this parameter, i.e., its value is compatible with the parameter definition (type, optional, non blank, etc).</p>
+<code class="sig-name descname">validate</code><span class="sig-paren">(</span><em class="sig-param">value: Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef]</em><span class="sig-paren">)</span> &#x2192; Tuple[bool, Union[rdflib.term.BNode, rdflib.term.Literal, rdflib.term.URIRef, None], Optional[str]]<a class="headerlink" href="#ottr.base.template.TemplateParameter.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert that a RDF Term can be used as argument for this parameter, <em>i.e.</em>, its value is compatible with the parameter definition (type, optional, non blank, etc).</p>
+<p>Argument: The value to validate.</p>
 <dl class="simple">
-<dt>Argument:</dt><dd><ul class="simple">
-<li><p>value :class`rdflib.term.Identifier`: Argument value</p></li>
+<dt>Returns: A tuple (<cite>is_valid</cite>, <cite>value</cite>, <cite>error_reason</cite>) where:</dt><dd><ul class="simple">
+<li><p><cite>is_valid</cite> is a boolean which indicates the outcome of the validation.</p></li>
+<li><p><cite>value</cite> is the RDF value to use for the argument. Set to <cite>None</cite> if the validation was not successfull.</p></li>
+<li><p><cite>error_reason</cite> is an error message that indicates why the validation has failed. Set to <cite>None</cite> if the validation was successfull.</p></li>
 </ul>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>A tuple <code class="docutils literal notranslate"><span class="pre">(is_valid,</span> <span class="pre">value,</span> <span class="pre">error_reason)</span></code> where:</dt><dd><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">is_valid</span></code> is a boolean which indicates the outcome of the validation.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code> is the RDF value to use for the argument. Set to <code class="docutils literal notranslate"><span class="pre">None</span></code> if the validation was not successfull.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">error_reason</span></code> is an error message that indicates why the validation has failed. Set to <code class="docutils literal notranslate"><span class="pre">None</span></code> if the validation was successfull.</p></li>
-</ul>
-</dd>
-</dl>
 </dd>
 </dl>
 </dd></dl>
